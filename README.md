@@ -17,6 +17,8 @@ Todos los juegos viven en el mismo dominio, así que comparten el `localStorage`
 - `peques.jugadores` y `peques.actual`: lista de jugadores y jugador elegido (los escribe la Isla).
 - Leo y Comprendo lee ese jugador; si no hay ninguno, vuelve a la portada. Sus estrellas se suman a la ficha del jugador y su récord aparece en la isla. Su progreso se guarda por jugador en `leo-y-comprendo.v1.<id>`.
 
+Mi cuerpo en francés no usa la voz del aparato (suele ser española): reproduce audios grabados con una voz francesa nativa en `frances/audio/`. Si cambias o añades frases, regénéralos con `python scripts/generar-audio-frances.py` (necesita `pip install edge-tts`).
+
 Mi cuerpo en francés carga directamente `../js/core.js`, `sonido.js` y `perfiles.js`, así que comparte también los sonidos, las estrellas y la pantalla de resultado.
 
 El progreso queda en cada dispositivo: no se sincroniza entre la tablet y el móvil.

@@ -28,34 +28,106 @@
   ];
 
   // ---------- Voz en francés ----------
+  // Audios grabados con una voz francesa nativa (scripts/generar-audio-frances.py): así la pronunciación
+  // no depende de las voces del aparato, que a menudo solo tiene la española.
+  const slug = (text) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  // Se reproducen con Web Audio recortando el silencio de antes y después, para que la canción tenga ritmo.
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let actx = null;
+  function audioCtx() {
+    if (!actx && AC) actx = new AC();
+    if (actx && actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  const SILENCE = 0.012;
+  const PAD = 0.03;
+  /** Devuelve el búfer y el tramo con voz (sin silencios). */
+  function trim(buf) {
+    const data = buf.getChannelData(0);
+    let a = 0;
+    let b = data.length - 1;
+    while (a < data.length && Math.abs(data[a]) < SILENCE) a++;
+    while (b > a && Math.abs(data[b]) < SILENCE) b--;
+    const start = Math.max(0, a / buf.sampleRate - PAD);
+    const end = Math.min(buf.duration, b / buf.sampleRate + PAD);
+    return { buf, start, dur: Math.max(0.05, end - start) };
+  }
+  const clips = new Map();
+  function clip(text) {
+    const src = `audio/${slug(text)}.mp3`;
+    if (!clips.has(src)) {
+      const ctx = audioCtx();
+      const loading = !ctx ? Promise.reject(new Error('Sin Web Audio')) : fetch(src)
+        .then((r) => { if (!r.ok) throw new Error(`${src}: ${r.status}`); return r.arrayBuffer(); })
+        .then((ab) => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)))
+        .then(trim);
+      loading.catch(() => clips.delete(src)); // si falla, se reintenta la próxima vez
+      clips.set(src, loading);
+    }
+    return clips.get(src);
+  }
+
+  // Respaldo solo si falta el audio: la voz del aparato, y únicamente si es francesa de verdad
   const canSpeak = 'speechSynthesis' in window;
   let frVoice = null;
   function findFrVoice() {
-    try {
-      const voices = speechSynthesis.getVoices();
-      frVoice = voices.find((v) => v.lang === 'fr-FR') || voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr')) || null;
-    } catch (err) { frVoice = null; }
+    try { frVoice = speechSynthesis.getVoices().find((v) => v.lang && v.lang.toLowerCase().startsWith('fr')) || null; }
+    catch (err) { frVoice = null; }
   }
   if (canSpeak) { findFrVoice(); speechSynthesis.addEventListener?.('voiceschanged', findFrVoice); }
-
-  function hush() { if (canSpeak) { try { speechSynthesis.cancel(); } catch (err) { /* sin voz */ } } }
-  /** Dice un texto en francés (se encola tras lo que esté sonando). */
-  function fr(text, { rate = 0.85, onend } = {}) {
-    if (!canSpeak) { if (onend) setTimeout(onend, 700); return; }
+  function speakFallback(text, speed, done) {
+    if (!canSpeak || !frVoice) { setTimeout(done, 600); return; }
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'fr-FR';
-      if (frVoice) u.voice = frVoice;
-      u.rate = rate;
-      u.pitch = 1.1;
-      if (onend) { u.onend = onend; u.onerror = onend; }
+      u.lang = frVoice.lang;
+      u.voice = frVoice;
+      u.rate = speed * 0.9;
+      u.onend = done;
+      u.onerror = done;
       speechSynthesis.speak(u);
-    } catch (err) {
-      console.warn('Voz francesa no disponible', err);
-      if (onend) setTimeout(onend, 700);
-    }
+    } catch (err) { setTimeout(done, 600); }
   }
-  const sayOne = (text) => { hush(); fr(text); };
+
+  let playing = null;
+  let token = 0;
+  /** Corta cualquier audio o voz que esté sonando. */
+  function hush() {
+    token++;
+    if (playing) {
+      try { playing.onended = null; playing.stop(); } catch (err) { /* ya había terminado */ }
+      playing = null;
+    }
+    if (canSpeak) { try { speechSynthesis.cancel(); } catch (err) { /* sin voz */ } }
+  }
+  /** Dice un texto en francés (corta lo anterior). speed: 1 normal, >1 más rápido. */
+  function fr(text, { speed = 1, onend } = {}) {
+    hush();
+    audioCtx(); // reanuda el audio dentro del toque, como exigen iPad y iPhone
+    const mine = token;
+    const done = () => { if (mine !== token) return; playing = null; if (onend) onend(); };
+    clip(text).then(({ buf, start, dur }) => {
+      if (mine !== token) return;
+      const src = actx.createBufferSource();
+      src.buffer = buf;
+      src.playbackRate.value = speed;
+      src.connect(actx.destination);
+      src.onended = done;
+      src.start(0, start, dur);
+      playing = src;
+    }).catch((err) => {
+      console.warn('Audio en francés no disponible', err);
+      if (mine === token) speakFallback(text, speed, done);
+    });
+  }
+  /** Carga de antemano todos los audios para que no haya esperas. */
+  function preload() { [...KEYS.map((k) => PARTS[k].fr), ...KEYS.map((k) => PARTS[k].touch), ...SONG.flatMap((l) => l.chunks.map(([t]) => t))].forEach((t) => clip(t).catch(() => {})); }
+  const sayOne = (text) => fr(text);
+  /** Dice varias palabras seguidas. */
+  function sayList(texts) {
+    const next = (i) => { if (i < texts.length) fr(texts[i], { onend: () => setTimeout(() => next(i + 1), 350) }); };
+    next(0);
+  }
 
   // ---------- Muñeco ----------
   const FIGURE = `
@@ -143,7 +215,7 @@
   const songBox = P.$('#song-fig');
   let songRun = 0;
   let singing = false;
-  let songRate = 0.8;
+  let songRate = 1;
 
   function renderLyrics() {
     P.$('#lyrics').innerHTML = SONG.map((line, li) =>
@@ -166,7 +238,7 @@
     P.$('#song-msg').textContent = '';
     P.$('#song-play').textContent = '⏹ Parar';
     const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci })));
-    const pause = songRate > 1 ? 30 : 160;
+    const pause = songRate > 1 ? 0 : 180;
     let i = 0;
     const step = () => {
       if (run !== songRun) return;
@@ -176,7 +248,7 @@
       P.$(`#lyrics .chunk[data-l="${s.li}"][data-c="${s.ci}"]`).classList.add('on');
       glow(songBox, s.key);
       i++;
-      fr(s.text, { rate: songRate, onend: () => setTimeout(step, pause) });
+      fr(s.text, { speed: songRate, onend: () => setTimeout(step, pause) });
     };
     step();
   }
@@ -347,7 +419,7 @@
     P.$('#touch-next').addEventListener('click', touchNext);
 
     P.$('#name-answers').addEventListener('click', (e) => { const b = e.target.closest('[data-k]'); if (b) nameAnswer(b); });
-    P.$('#name-say').addEventListener('click', () => { hush(); nr.options.forEach((k) => fr(PARTS[k].fr)); });
+    P.$('#name-say').addEventListener('click', () => sayList(nr.options.map((k) => PARTS[k].fr)));
     P.$('#name-next').addEventListener('click', nameNext);
 
     P.$('#res-again').addEventListener('click', P.replay);
@@ -366,7 +438,7 @@
 
     // Al cambiar de pantalla se calla la voz y se para la canción
     P.onShow((screen) => { if (singing) stopSong(); else hush(); refreshTopbar(screen); });
-    document.addEventListener('pointerdown', () => P.prefs.resumeOnGesture(), { once: true });
+    document.addEventListener('pointerdown', () => { P.prefs.resumeOnGesture(); preload(); }, { once: true });
   }
 
   bind();
