@@ -82,14 +82,18 @@
     <div class="game-head">
       <h2>La canción</h2>
       <div class="chips" id="song-speed">
-        <button class="chip" data-rate="1" aria-pressed="true">🐢 Despacio</button>
-        <button class="chip" data-rate="1.2" aria-pressed="false">🐇 ¡Rápido!</button>
+        <button class="chip" data-bpm="92" aria-pressed="true">🐢 Despacio</button>
+        <button class="chip" data-bpm="132" aria-pressed="false">🐇 ¡Rápido!</button>
+      </div>
+      <div class="chips" id="song-mode">
+        <button class="chip" data-voice="1" aria-pressed="true">🎤 Con voz</button>
+        <button class="chip" data-voice="0" aria-pressed="false">🎵 Solo música</button>
       </div>
     </div>
     <div class="fr-layout">
       <div class="figure-box" id="song-fig"></div>
       <div class="board">
-        <p class="tip">Escucha y <b>toca tu propio cuerpo</b> cada vez que se ilumine una parte.</p>
+        <p class="tip">Canta y <b>toca tu propio cuerpo</b> cada vez que se ilumine una parte. Con «Solo música» la cantas tú.</p>
         <div class="lyrics" id="lyrics"></div>
         <div class="row"><button class="btn go big" id="song-play">▶ ¡A cantar!</button></div>
         <p class="feedback ok" id="song-msg" aria-live="polite"></p>

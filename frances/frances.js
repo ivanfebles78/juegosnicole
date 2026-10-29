@@ -212,10 +212,50 @@
   }
 
   // ---------- Canción ----------
+  // Melodía real de la canción (la de «There is a tavern in the town»), en Do mayor y 4/4.
+  // [nota MIDI, pulso en que empieza, duración en pulsos]. Partitura: singing-bell.com.
+  const MELODY = [
+    [67, 0, 2], [69, 2, .5], [67, 2.5, .5], [66, 3, .5], [67, 3.5, .5], //  Tê-te, é-pau-les
+    [64, 4, 1], [67, 5, .5], [67, 5.5, .5], [67, 6, 2], //                    ge-noux et pieds
+    [67, 8, 2], [69, 10, .5], [67, 10.5, .5], [66, 11, .5], [67, 11.5, .5],
+    [62, 12, 1], [67, 13, .5], [67, 13.5, .5], [67, 14, .5], [65, 14.5, .5], [64, 15, .5], [62, 15.5, .5],
+    [60, 16, 1], [64, 17, 1], [67, 18, 1], [72, 19, 1], //                    J'ai deux yeux, deux o-reilles
+    [74, 20, .5], [72, 20.5, .5], [71, 21, .5], [72, 21.5, .5], [69, 22, 2], // u-ne bouche et un nez
+    [71, 24, 2], [71, 26, .5], [67, 26.5, .5], [69, 27, .5], [71, 27.5, .5],
+    [72, 28, 1], [72, 29, .5], [72, 29.5, .5], [72, 30, 2],
+  ];
+  // Acompañamiento: un bajo cada dos pulsos (Do, Do, Do, Sol, Do, Fa, Sol, Do)
+  const BASS = [48, 48, 48, 48, 48, 48, 43, 43, 48, 48, 41, 41, 43, 43, 48, 48];
+  const SONG_BEATS = 32;
+  // Pulso en el que entra cada trozo de la letra (mismo orden que SONG)
+  const LINE_BEATS = [[0, 2, 3, 4], [5, 6], [8, 10, 11, 12], [13, 14], [16, 18], [20, 22], [24, 26, 27, 28], [29, 30]];
+  const BPM_SLOW = 92;
+
   const songBox = P.$('#song-fig');
   let songRun = 0;
   let singing = false;
-  let songRate = 1;
+  let songBpm = BPM_SLOW;
+  let withVoice = true;
+  let songBus = null;
+  let songTimers = [];
+
+  /** Nota de «caja de música»: seno con un armónico suave y caída rápida. */
+  function tone(ctx, out, midi, when, dur, vol) {
+    const freq = 440 * 2 ** ((midi - 69) / 12);
+    const end = when + Math.max(0.18, dur);
+    [[freq, vol, 'sine'], [freq * 2, vol * 0.25, 'triangle']].forEach(([f, v, type]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.exponentialRampToValueAtTime(v, when + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc.connect(gain).connect(out);
+      osc.start(when);
+      osc.stop(end + 0.05);
+    });
+  }
 
   function renderLyrics() {
     P.$('#lyrics').innerHTML = SONG.map((line, li) =>
@@ -226,34 +266,66 @@
   function stopSong() {
     songRun++;
     singing = false;
+    songTimers.forEach(clearTimeout);
+    songTimers = [];
+    if (songBus) { try { songBus.disconnect(); } catch (err) { /* ya desconectado */ } songBus = null; }
     hush();
     clearChunks();
     clearMarks(songBox);
     P.$('#song-play').textContent = '▶ ¡A cantar!';
   }
-  function playSong() {
+  /** Programa la música y, si toca, cada palabra en su pulso exacto. */
+  async function playSong() {
     stopSong();
     const run = songRun;
+    const ctx = audioCtx();
+    if (!ctx) { P.$('#song-msg').textContent = 'Este navegador no puede tocar música.'; return; }
     singing = true;
     P.$('#song-msg').textContent = '';
+    P.$('#song-play').textContent = '⏳ Preparando…';
+    const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci, beat: LINE_BEATS[li][ci] })));
+    let voices = [];
+    if (withVoice) {
+      try { voices = await Promise.all(steps.map((s) => clip(s.text))); }
+      catch (err) { console.warn('Sin audios de la canción; suena solo la música', err); }
+    }
+    if (run !== songRun) return;
     P.$('#song-play').textContent = '⏹ Parar';
-    const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci })));
-    const pause = songRate > 1 ? 0 : 180;
-    let i = 0;
-    const step = () => {
-      if (run !== songRun) return;
-      clearChunks();
-      if (i >= steps.length) { finishSong(); return; }
-      const s = steps[i];
-      P.$(`#lyrics .chunk[data-l="${s.li}"][data-c="${s.ci}"]`).classList.add('on');
-      glow(songBox, s.key);
-      i++;
-      fr(s.text, { speed: songRate, onend: () => setTimeout(step, pause) });
-    };
-    step();
+
+    const beat = 60 / songBpm;
+    const t0 = ctx.currentTime + 0.3;
+    songBus = ctx.createGain();
+    songBus.connect(ctx.destination);
+    const music = ctx.createGain();
+    music.gain.value = withVoice ? 0.55 : 0.9;
+    music.connect(songBus);
+    MELODY.forEach(([midi, b, d]) => tone(ctx, music, midi, t0 + b * beat, d * beat * 0.95, 0.22));
+    BASS.forEach((midi, i) => tone(ctx, music, midi, t0 + i * 2 * beat, 2 * beat * 0.9, 0.14));
+
+    steps.forEach((s, i) => {
+      const when = t0 + s.beat * beat;
+      const slot = ((steps[i + 1] ? steps[i + 1].beat : SONG_BEATS) - s.beat) * beat;
+      const v = voices[i];
+      if (v) {
+        const src = ctx.createBufferSource();
+        src.buffer = v.buf;
+        // Si la palabra no cabe en su hueco, se acelera un poco para no pisar la siguiente
+        src.playbackRate.value = Math.min(1.6, Math.max(1, v.dur / (slot * 0.92)));
+        src.connect(songBus);
+        src.start(when, v.start, v.dur);
+      }
+      songTimers.push(setTimeout(() => {
+        if (run !== songRun) return;
+        clearChunks();
+        P.$(`#lyrics .chunk[data-l="${s.li}"][data-c="${s.ci}"]`).classList.add('on');
+        glow(songBox, s.key);
+      }, (when - ctx.currentTime) * 1000));
+    });
+    songTimers.push(setTimeout(() => { if (run === songRun) finishSong(); },
+      (t0 + SONG_BEATS * beat - ctx.currentTime) * 1000 + 300));
   }
   function finishSong() {
-    const fast = songRate > 1;
+    const fast = songBpm > BPM_SLOW;
     stopSong();
     P.$('#song-msg').textContent = fast ? '¡Uf, qué rápido! ¡Bravo! 🥳' : '¡Muy bien! ¿Te atreves con la versión rápida? 🐇';
     P.sound.win();
@@ -405,10 +477,17 @@
 
     P.$('#song-play').addEventListener('click', () => { if (singing) stopSong(); else playSong(); });
     P.$('#song-speed').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-rate]');
+      const b = e.target.closest('[data-bpm]');
       if (!b) return;
-      songRate = Number(b.dataset.rate);
+      songBpm = Number(b.dataset.bpm);
       P.$$('#song-speed .chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+      if (singing) playSong();
+    });
+    P.$('#song-mode').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-voice]');
+      if (!b) return;
+      withVoice = b.dataset.voice === '1';
+      P.$$('#song-mode .chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
       if (singing) playSong();
     });
 
