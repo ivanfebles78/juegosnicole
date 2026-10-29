@@ -123,7 +123,7 @@
   /** Carga de antemano todos los audios para que no haya esperas. */
   function preload() {
     [...KEYS.map((k) => PARTS[k].fr), ...KEYS.map((k) => PARTS[k].touch)].forEach((t) => clip(t).catch(() => {}));
-    loadScore().then((s) => s.tempos.forEach((bpm) => loadTrack(`audio/cancion-${bpm}.mp3`).catch(() => {}))).catch(() => {});
+    loadScore().catch(() => {});
   }
   const sayOne = (text) => fr(text);
   /** Dice varias palabras seguidas. */
@@ -215,8 +215,8 @@
   }
 
   // ---------- Canción ----------
-  // La partitura (melodía sílaba a sílaba, bajo y tempos) está en cancion.json, la misma que usa
-  // scripts/cantar-frances.py para generar la voz cantada audio/cancion-<tempo>.mp3.
+  // La partitura (melodía sílaba a sílaba, bajo y tempos) está en cancion.json. Se toca como karaoke:
+  // la música y la letra iluminada, para cantarla en casa (una voz sintética cantando sonaba mal).
   let score = null;
   const loadScore = () => score || (score = fetch('cancion.json').then((r) => {
     if (!r.ok) throw new Error(`cancion.json: ${r.status}`);
@@ -226,24 +226,10 @@
   const LINE_BEATS = [[0, 2, 3.5, 5], [6, 7], [8, 10, 11.5, 13], [14, 15], [16, 18], [20, 21.5], [24, 26, 27.5, 29], [30, 31]];
   const BPM_SLOW = 92;
 
-  /** Pista entera (sin recortar silencios): la voz cantada. */
-  const tracks = new Map();
-  function loadTrack(src) {
-    if (!tracks.has(src)) {
-      const loading = fetch(src)
-        .then((r) => { if (!r.ok) throw new Error(`${src}: ${r.status}`); return r.arrayBuffer(); })
-        .then((ab) => new Promise((res, rej) => audioCtx().decodeAudioData(ab, res, rej)));
-      loading.catch(() => tracks.delete(src));
-      tracks.set(src, loading);
-    }
-    return tracks.get(src);
-  }
-
   const songBox = P.$('#song-fig');
   let songRun = 0;
   let singing = false;
   let songBpm = BPM_SLOW;
-  let withVoice = true;
   let songBus = null;
   let songTimers = [];
 
@@ -282,7 +268,7 @@
     clearMarks(songBox);
     P.$('#song-play').textContent = '▶ ¡A cantar!';
   }
-  /** Toca la música y, con «Con voz», la voz cantada; la letra se ilumina en su pulso. */
+  /** Toca la música; la letra y la parte del cuerpo se iluminan en su pulso. */
   async function playSong() {
     stopSong();
     const run = songRun;
@@ -292,13 +278,8 @@
     P.$('#song-msg').textContent = '';
     P.$('#song-play').textContent = '⏳ Preparando…';
     let sheet;
-    let vocal = null;
     try {
       sheet = await loadScore();
-      if (withVoice) vocal = await loadTrack(`audio/cancion-${songBpm}.mp3`).catch((err) => {
-        console.warn('Sin voz cantada; suena solo la música', err);
-        return null;
-      });
     } catch (err) {
       console.warn('No se pudo cargar la canción', err);
       if (run === songRun) { stopSong(); P.$('#song-msg').textContent = 'No se ha podido cargar la canción. Revisa la conexión.'; }
@@ -312,17 +293,11 @@
     songBus = ctx.createGain();
     songBus.connect(ctx.destination);
     const music = ctx.createGain();
-    music.gain.value = vocal ? 0.45 : 0.9;
+    music.gain.value = 0.9;
     music.connect(songBus);
-    // La melodía dobla a la voz nota a nota; el bajo marca cada dos pulsos
+    // La melodía va nota a nota con la letra; el bajo marca cada dos pulsos
     sheet.notes.forEach((n) => tone(ctx, music, n.m, t0 + n.b * beat, n.d * beat * 0.95, 0.22));
     sheet.bass.forEach((midi, i) => tone(ctx, music, midi, t0 + i * 2 * beat, 2 * beat * 0.9, 0.14));
-    if (vocal) {
-      const src = ctx.createBufferSource();
-      src.buffer = vocal;
-      src.connect(songBus);
-      src.start(t0 - sheet.lead); // la pista empieza `lead` s antes del pulso 0
-    }
 
     const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci, beat: LINE_BEATS[li][ci] })));
     steps.forEach((s) => {
@@ -494,13 +469,6 @@
       if (!b) return;
       songBpm = Number(b.dataset.bpm);
       P.$$('#song-speed .chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
-      if (singing) playSong();
-    });
-    P.$('#song-mode').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-voice]');
-      if (!b) return;
-      withVoice = b.dataset.voice === '1';
-      P.$$('#song-mode .chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
       if (singing) playSong();
     });
 

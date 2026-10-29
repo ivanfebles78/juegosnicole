@@ -1,5 +1,5 @@
 {
-  "_info": "Tête, épaules, genoux et pieds. Melodía de «There is a tavern in the town» (Do mayor, 4/4), ajustada sílaba a sílaba a la letra francesa. s = sílaba tal como se envía a la voz (escrita como suena), m = nota MIDI, b = pulso de inicio, d = duración en pulsos. La usan scripts/cantar-frances.py (voz cantada) y frances.js (música).",
+  "_info": "Tête, épaules, genoux et pieds. Melodía de «There is a tavern in the town» (Do mayor, 4/4), ajustada sílaba a sílaba a la letra francesa. s = sílaba tal como se envía a la voz (escrita como suena), m = nota MIDI, b = pulso de inicio, d = duración en pulsos. La usa frances.js para tocar la música del karaoke.",
   "tempos": [92, 132],
   "beats": 33,
   "lead": 0.25,
