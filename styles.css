@@ -144,6 +144,7 @@ p { margin: 0; }
 .i-mates { background: linear-gradient(170deg, #ffd3ea, var(--bubble)); }
 .i-mapa { background: linear-gradient(170deg, #c9f3d9, var(--grass)); }
 .i-lectura { background: linear-gradient(170deg, #e2edff, #9cc4ff); }
+.i-frances { background: linear-gradient(170deg, #ffe0dc, #ffa69c); }
 a.island { text-decoration: none; }
 .island.soon { background: var(--paper); border-style: dashed; cursor: default; opacity: .75; box-shadow: none; }
 .island-art { position: relative; font-size: 4.4rem; line-height: 1; height: 84px; }

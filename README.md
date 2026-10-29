@@ -8,6 +8,7 @@ Juegos educativos para Nicole, publicados con GitHub Pages. La portada es la **I
 | Mates mágicas | `index.html` + `js/juego-mates.js` | Sumas llevando y multiplicaciones |
 | Mapa de España | `index.html` + `js/juego-mapa.js` | Comunidades autónomas |
 | Leo y Comprendo | `lectura/` | Comprensión lectora (frases → cuentos) |
+| Mi cuerpo en francés | `frances/` | Partes del cuerpo con «Tête, épaules, genoux et pieds» |
 
 ## Cómo comparten el jugador
 
@@ -15,6 +16,8 @@ Todos los juegos viven en el mismo dominio, así que comparten el `localStorage`
 
 - `peques.jugadores` y `peques.actual`: lista de jugadores y jugador elegido (los escribe la Isla).
 - Leo y Comprendo lee ese jugador; si no hay ninguno, vuelve a la portada. Sus estrellas se suman a la ficha del jugador y su récord aparece en la isla. Su progreso se guarda por jugador en `leo-y-comprendo.v1.<id>`.
+
+Mi cuerpo en francés carga directamente `../js/core.js`, `sonido.js` y `perfiles.js`, así que comparte también los sonidos, las estrellas y la pantalla de resultado.
 
 El progreso queda en cada dispositivo: no se sincroniza entre la tablet y el móvil.
 

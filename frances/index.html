@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi cuerpo en francés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="frances.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="topbar" id="topbar">
+  <a class="me" href="../" title="Volver a la Isla de Juegos">
+    <span class="me-face" id="me-face"></span>
+    <span class="me-name" id="me-name"></span>
+  </a>
+  <span class="star-pill" id="me-stars" title="Estrellas conseguidas">⭐ 0</span>
+  <div class="tools">
+    <button class="tool" id="btn-music" aria-pressed="false" title="Música">🎵</button>
+    <button class="tool" id="btn-voice" aria-pressed="true" title="Leer en voz alta">🗣️</button>
+    <button class="tool" id="btn-back" title="Menú del francés" hidden>🇫🇷</button>
+    <a class="tool home" href="../" title="Volver a la isla">🏝️</a>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- MENÚ -->
+  <section class="screen" id="s-menu">
+    <h2 class="hello" id="menu-hello">Bonjour !</h2>
+    <p class="lead">Aprende las partes del cuerpo en francés con la canción<br><b>«Tête, épaules, genoux et pieds»</b></p>
+    <div class="islands">
+      <button class="island i-learn" data-go="learn">
+        <span class="island-art" aria-hidden="true"><b>👂</b><i>🔊</i></span>
+        <span class="island-name">Aprende</span>
+        <span class="island-sub">Toca el cuerpo y escucha cómo se dice</span>
+      </button>
+      <button class="island i-song" data-go="song">
+        <span class="island-art" aria-hidden="true"><b>🎤</b><i>🎶</i></span>
+        <span class="island-name">La canción</span>
+        <span class="island-sub">Canta y toca cada parte de tu cuerpo</span>
+      </button>
+      <button class="island i-touch" data-go="touch">
+        <span class="island-art" aria-hidden="true"><b>👆</b><i>🧒</i></span>
+        <span class="island-name">¡Toca!</span>
+        <span class="island-sub">Escucha la frase y toca la parte</span>
+      </button>
+      <button class="island i-name" data-go="name">
+        <span class="island-art" aria-hidden="true"><b>🤔</b><i>💬</i></span>
+        <span class="island-name">¿Cómo se dice?</span>
+        <span class="island-sub">Elige la palabra en francés</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- APRENDE -->
+  <section class="screen" id="s-learn" hidden>
+    <div class="game-head"><h2>Aprende las palabras</h2></div>
+    <div class="fr-layout">
+      <div class="figure-box" id="learn-fig"></div>
+      <div class="board">
+        <div class="word-card">
+          <p class="fr-word" id="learn-fr">Touche !</p>
+          <p class="es-word" id="learn-es">Toca una parte del cuerpo del niño</p>
+          <button class="btn ghost" id="learn-say">🔊 Otra vez</button>
+        </div>
+        <div class="words" id="learn-chips"></div>
+        <div class="done" id="learn-done" hidden>
+          <p>¡Ya conoces las 8 palabras! 🎉</p>
+          <button class="btn go big" data-go="song">🎤 Vamos a cantar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CANCIÓN -->
+  <section class="screen" id="s-song" hidden>
+    <div class="game-head">
+      <h2>La canción</h2>
+      <div class="chips" id="song-speed">
+        <button class="chip" data-rate="0.8" aria-pressed="true">🐢 Despacio</button>
+        <button class="chip" data-rate="1.35" aria-pressed="false">🐇 ¡Rápido!</button>
+      </div>
+    </div>
+    <div class="fr-layout">
+      <div class="figure-box" id="song-fig"></div>
+      <div class="board">
+        <p class="tip">Escucha y <b>toca tu propio cuerpo</b> cada vez que se ilumine una parte.</p>
+        <div class="lyrics" id="lyrics"></div>
+        <div class="row"><button class="btn go big" id="song-play">▶ ¡A cantar!</button></div>
+        <p class="feedback ok" id="song-msg" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- JUEGO: ¡TOCA! -->
+  <section class="screen" id="s-touch" hidden>
+    <div class="game-head">
+      <h2 id="touch-title">¡Toca!</h2>
+      <div class="dots" id="touch-dots"></div>
+    </div>
+    <div class="fr-layout">
+      <div class="board">
+        <p class="prompt-fr" id="touch-fr"></p>
+        <p class="prompt-es" id="touch-es"></p>
+        <div class="row">
+          <button class="btn ghost" id="touch-say">🔊 Repetir</button>
+          <button class="btn ghost" id="touch-hint">💡 Pista</button>
+          <button class="btn go big" id="touch-next" hidden>Siguiente ➜</button>
+        </div>
+        <p class="feedback" id="touch-fb" aria-live="polite"></p>
+      </div>
+      <div class="figure-box" id="touch-fig"></div>
+    </div>
+  </section>
+
+  <!-- JUEGO: ¿CÓMO SE DICE? -->
+  <section class="screen" id="s-name" hidden>
+    <div class="game-head">
+      <h2 id="name-title">¿Cómo se dice?</h2>
+      <div class="dots" id="name-dots"></div>
+    </div>
+    <div class="fr-layout">
+      <div class="board">
+        <p class="prompt-fr">Comment ça s'appelle ?</p>
+        <p class="prompt-es">¿Cómo se llama en francés la parte amarilla?</p>
+        <div class="answers" id="name-answers"></div>
+        <div class="row">
+          <button class="btn ghost" id="name-say">🔊 Escuchar las palabras</button>
+          <button class="btn go big" id="name-next" hidden>Siguiente ➜</button>
+        </div>
+        <p class="feedback" id="name-fb" aria-live="polite"></p>
+      </div>
+      <div class="figure-box" id="name-fig"></div>
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="screen" id="s-result" hidden>
+    <div class="board center result">
+      <div class="res-face" id="res-face">🏆</div>
+      <h2 id="res-title"></h2>
+      <div class="res-stars" id="res-stars"></div>
+      <p class="big-text" id="res-msg"></p>
+      <div class="row">
+        <button class="btn go big" id="res-again">🔁 Otra vez</button>
+        <button class="btn ghost" id="res-menu">🇫🇷 Menú del francés</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="react" id="react" aria-hidden="true"><span class="react-face" id="react-face"></span><span class="react-text" id="react-text"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/sonido.js"></script>
+<script src="../js/perfiles.js"></script>
+<script src="frances.js"></script>
+</body>
+</html>

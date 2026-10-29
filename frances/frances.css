@@ -1,0 +1,66 @@
+/* Mi cuerpo en francés: usa el estilo de la Isla de Juegos (../styles.css) y añade el muñeco y la letra de la canción. */
+a.me, a.tool { text-decoration: none; }
+a.tool { display: grid; place-items: center; }
+
+.i-learn { background: linear-gradient(170deg, #e2edff, #9cc4ff); }
+.i-song { background: linear-gradient(170deg, #ffd3ea, var(--bubble)); }
+.i-touch { background: linear-gradient(170deg, #fff1b8, var(--sun)); }
+.i-name { background: linear-gradient(170deg, #c9f3d9, var(--grass)); }
+
+.fr-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 18px; align-items: start; }
+@media (max-width: 720px) {
+  .fr-layout { grid-template-columns: minmax(0, 1fr); }
+  .body-svg { max-height: 40vh; }
+}
+
+.figure-box {
+  background: var(--paper); border: var(--line); border-radius: var(--r-lg); box-shadow: var(--lift);
+  padding: 10px; display: grid; place-items: center;
+}
+.body-svg { width: 100%; max-width: 300px; height: auto; max-height: 60vh; touch-action: manipulation; }
+.body-svg * { stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.body-svg .skin { fill: #ffd7b5; }
+.body-svg .skin2 { fill: #ffc79d; }
+.body-svg .shirt { fill: var(--tomato); }
+.body-svg .shirt2 { fill: #ff8a7f; }
+.body-svg .shorts { fill: var(--ocean); }
+.body-svg .shoe { fill: var(--grape); }
+.body-svg .hair { fill: #7a4a2a; }
+.body-svg .eye { fill: #fff; }
+.body-svg .pupil { fill: var(--ink); stroke: none; }
+.body-svg .nose { fill: #ffa982; }
+.body-svg .mouth { fill: #e2525a; }
+.body-svg .hit { fill: transparent; stroke: none; }
+
+.part { cursor: pointer; outline: none; }
+.part .fill { transition: fill .15s ease; }
+.part:hover .fill { filter: brightness(1.07); }
+.part:focus-visible .fill { stroke: var(--ocean); stroke-width: 5; }
+.part.glow .fill { fill: var(--sun); animation: glow 1s ease-in-out infinite; }
+.part.hint .fill { fill: var(--leaf); }
+.part.wrong .fill { fill: var(--tomato); }
+.static .part { cursor: default; }
+@keyframes glow { 50% { filter: drop-shadow(0 0 7px var(--sun)) brightness(1.08); } }
+
+.word-card { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.fr-word { margin: 0; font-family: var(--font-display); font-size: clamp(2.2rem, 8vw, 3.3rem); color: var(--ocean); }
+.es-word { margin: 0; font-weight: 800; color: var(--ink-soft); font-size: 1.25rem; }
+.words { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.word-chip {
+  font: inherit; font-weight: 800; color: var(--ink); cursor: pointer; background: var(--paper);
+  border: var(--line); border-radius: 999px; padding: 4px 14px; box-shadow: 0 4px 0 var(--ink);
+}
+.word-chip.seen { background: var(--ok-bg); }
+.word-chip[aria-pressed="true"] { background: var(--sun); }
+.done { text-align: center; font-weight: 800; font-size: 1.2rem; display: grid; justify-items: center; gap: 8px; }
+.done p { margin: 0; }
+
+.lyrics { display: grid; gap: 6px; }
+.lyric { margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 4.4vw, 1.7rem); line-height: 1.4; }
+.lyric .es { display: block; font-family: var(--font-body); font-size: .95rem; font-weight: 700; color: var(--ink-soft); line-height: 1.2; }
+.chunk { border-radius: 10px; transition: background-color .1s ease; }
+.chunk.on { background: var(--sun); box-shadow: 0 0 0 4px var(--sun); }
+
+.prompt-fr { margin: 0; text-align: center; font-family: var(--font-display); font-size: clamp(1.8rem, 7vw, 2.7rem); color: var(--ocean); }
+.prompt-es { margin: 0; text-align: center; font-weight: 800; color: var(--ink-soft); min-height: 1.4em; }
+#name-answers .answer { font-size: 1.6rem; }
