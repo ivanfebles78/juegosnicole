@@ -121,7 +121,10 @@
     });
   }
   /** Carga de antemano todos los audios para que no haya esperas. */
-  function preload() { [...KEYS.map((k) => PARTS[k].fr), ...KEYS.map((k) => PARTS[k].touch), ...SONG.flatMap((l) => l.chunks.map(([t]) => t))].forEach((t) => clip(t).catch(() => {})); }
+  function preload() {
+    [...KEYS.map((k) => PARTS[k].fr), ...KEYS.map((k) => PARTS[k].touch)].forEach((t) => clip(t).catch(() => {}));
+    loadScore().then((s) => s.tempos.forEach((bpm) => loadTrack(`audio/cancion-${bpm}.mp3`).catch(() => {}))).catch(() => {});
+  }
   const sayOne = (text) => fr(text);
   /** Dice varias palabras seguidas. */
   function sayList(texts) {
@@ -212,24 +215,29 @@
   }
 
   // ---------- Canción ----------
-  // Melodía real de la canción (la de «There is a tavern in the town»), en Do mayor y 4/4.
-  // [nota MIDI, pulso en que empieza, duración en pulsos]. Partitura: singing-bell.com.
-  const MELODY = [
-    [67, 0, 2], [69, 2, .5], [67, 2.5, .5], [66, 3, .5], [67, 3.5, .5], //  Tê-te, é-pau-les
-    [64, 4, 1], [67, 5, .5], [67, 5.5, .5], [67, 6, 2], //                    ge-noux et pieds
-    [67, 8, 2], [69, 10, .5], [67, 10.5, .5], [66, 11, .5], [67, 11.5, .5],
-    [62, 12, 1], [67, 13, .5], [67, 13.5, .5], [67, 14, .5], [65, 14.5, .5], [64, 15, .5], [62, 15.5, .5],
-    [60, 16, 1], [64, 17, 1], [67, 18, 1], [72, 19, 1], //                    J'ai deux yeux, deux o-reilles
-    [74, 20, .5], [72, 20.5, .5], [71, 21, .5], [72, 21.5, .5], [69, 22, 2], // u-ne bouche et un nez
-    [71, 24, 2], [71, 26, .5], [67, 26.5, .5], [69, 27, .5], [71, 27.5, .5],
-    [72, 28, 1], [72, 29, .5], [72, 29.5, .5], [72, 30, 2],
-  ];
-  // Acompañamiento: un bajo cada dos pulsos (Do, Do, Do, Sol, Do, Fa, Sol, Do)
-  const BASS = [48, 48, 48, 48, 48, 48, 43, 43, 48, 48, 41, 41, 43, 43, 48, 48];
-  const SONG_BEATS = 32;
+  // La partitura (melodía sílaba a sílaba, bajo y tempos) está en cancion.json, la misma que usa
+  // scripts/cantar-frances.py para generar la voz cantada audio/cancion-<tempo>.mp3.
+  let score = null;
+  const loadScore = () => score || (score = fetch('cancion.json').then((r) => {
+    if (!r.ok) throw new Error(`cancion.json: ${r.status}`);
+    return r.json();
+  }).catch((err) => { score = null; throw err; }));
   // Pulso en el que entra cada trozo de la letra (mismo orden que SONG)
-  const LINE_BEATS = [[0, 2, 3, 4], [5, 6], [8, 10, 11, 12], [13, 14], [16, 18], [20, 22], [24, 26, 27, 28], [29, 30]];
+  const LINE_BEATS = [[0, 2, 3.5, 5], [6, 7], [8, 10, 11.5, 13], [14, 15], [16, 18], [20, 21.5], [24, 26, 27.5, 29], [30, 31]];
   const BPM_SLOW = 92;
+
+  /** Pista entera (sin recortar silencios): la voz cantada. */
+  const tracks = new Map();
+  function loadTrack(src) {
+    if (!tracks.has(src)) {
+      const loading = fetch(src)
+        .then((r) => { if (!r.ok) throw new Error(`${src}: ${r.status}`); return r.arrayBuffer(); })
+        .then((ab) => new Promise((res, rej) => audioCtx().decodeAudioData(ab, res, rej)));
+      loading.catch(() => tracks.delete(src));
+      tracks.set(src, loading);
+    }
+    return tracks.get(src);
+  }
 
   const songBox = P.$('#song-fig');
   let songRun = 0;
@@ -274,7 +282,7 @@
     clearMarks(songBox);
     P.$('#song-play').textContent = '▶ ¡A cantar!';
   }
-  /** Programa la música y, si toca, cada palabra en su pulso exacto. */
+  /** Toca la música y, con «Con voz», la voz cantada; la letra se ilumina en su pulso. */
   async function playSong() {
     stopSong();
     const run = songRun;
@@ -283,37 +291,42 @@
     singing = true;
     P.$('#song-msg').textContent = '';
     P.$('#song-play').textContent = '⏳ Preparando…';
-    const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci, beat: LINE_BEATS[li][ci] })));
-    let voices = [];
-    if (withVoice) {
-      try { voices = await Promise.all(steps.map((s) => clip(s.text))); }
-      catch (err) { console.warn('Sin audios de la canción; suena solo la música', err); }
+    let sheet;
+    let vocal = null;
+    try {
+      sheet = await loadScore();
+      if (withVoice) vocal = await loadTrack(`audio/cancion-${songBpm}.mp3`).catch((err) => {
+        console.warn('Sin voz cantada; suena solo la música', err);
+        return null;
+      });
+    } catch (err) {
+      console.warn('No se pudo cargar la canción', err);
+      if (run === songRun) { stopSong(); P.$('#song-msg').textContent = 'No se ha podido cargar la canción. Revisa la conexión.'; }
+      return;
     }
     if (run !== songRun) return;
     P.$('#song-play').textContent = '⏹ Parar';
 
     const beat = 60 / songBpm;
-    const t0 = ctx.currentTime + 0.3;
+    const t0 = ctx.currentTime + sheet.lead + 0.15;
     songBus = ctx.createGain();
     songBus.connect(ctx.destination);
     const music = ctx.createGain();
-    music.gain.value = withVoice ? 0.55 : 0.9;
+    music.gain.value = vocal ? 0.45 : 0.9;
     music.connect(songBus);
-    MELODY.forEach(([midi, b, d]) => tone(ctx, music, midi, t0 + b * beat, d * beat * 0.95, 0.22));
-    BASS.forEach((midi, i) => tone(ctx, music, midi, t0 + i * 2 * beat, 2 * beat * 0.9, 0.14));
+    // La melodía dobla a la voz nota a nota; el bajo marca cada dos pulsos
+    sheet.notes.forEach((n) => tone(ctx, music, n.m, t0 + n.b * beat, n.d * beat * 0.95, 0.22));
+    sheet.bass.forEach((midi, i) => tone(ctx, music, midi, t0 + i * 2 * beat, 2 * beat * 0.9, 0.14));
+    if (vocal) {
+      const src = ctx.createBufferSource();
+      src.buffer = vocal;
+      src.connect(songBus);
+      src.start(t0 - sheet.lead); // la pista empieza `lead` s antes del pulso 0
+    }
 
-    steps.forEach((s, i) => {
+    const steps = SONG.flatMap((line, li) => line.chunks.map(([text, key], ci) => ({ text, key, li, ci, beat: LINE_BEATS[li][ci] })));
+    steps.forEach((s) => {
       const when = t0 + s.beat * beat;
-      const slot = ((steps[i + 1] ? steps[i + 1].beat : SONG_BEATS) - s.beat) * beat;
-      const v = voices[i];
-      if (v) {
-        const src = ctx.createBufferSource();
-        src.buffer = v.buf;
-        // Si la palabra no cabe en su hueco, se acelera un poco para no pisar la siguiente
-        src.playbackRate.value = Math.min(1.6, Math.max(1, v.dur / (slot * 0.92)));
-        src.connect(songBus);
-        src.start(when, v.start, v.dur);
-      }
       songTimers.push(setTimeout(() => {
         if (run !== songRun) return;
         clearChunks();
@@ -322,7 +335,7 @@
       }, (when - ctx.currentTime) * 1000));
     });
     songTimers.push(setTimeout(() => { if (run === songRun) finishSong(); },
-      (t0 + SONG_BEATS * beat - ctx.currentTime) * 1000 + 300));
+      (t0 + sheet.beats * beat - ctx.currentTime) * 1000 + 300));
   }
   function finishSong() {
     const fast = songBpm > BPM_SLOW;

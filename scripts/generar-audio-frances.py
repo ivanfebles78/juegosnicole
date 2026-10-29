@@ -23,7 +23,7 @@ TOUCH = [
     "Touche ta tête !", "Touche tes épaules !", "Touche tes genoux !", "Touche tes pieds !",
     "Touche tes yeux !", "Touche tes oreilles !", "Touche ta bouche !", "Touche ton nez !",
 ]
-SONG = ["Tête,", "épaules,", "genoux", "et pieds,", "J'ai deux yeux,", "deux oreilles,", "une bouche", "et un nez."]
+# La canción cantada se genera aparte con scripts/cantar-frances.py
 
 
 def slug(text: str) -> str:
@@ -33,7 +33,7 @@ def slug(text: str) -> str:
 
 async def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    phrases = list(dict.fromkeys(WORDS + TOUCH + SONG))
+    phrases = list(dict.fromkeys(WORDS + TOUCH))
     for text in phrases:
         target = OUT / f"{slug(text)}.mp3"
         try:

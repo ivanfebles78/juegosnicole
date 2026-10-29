@@ -19,6 +19,8 @@ Todos los juegos viven en el mismo dominio, así que comparten el `localStorage`
 
 Mi cuerpo en francés no usa la voz del aparato (suele ser española): reproduce audios grabados con una voz francesa nativa en `frances/audio/`. Si cambias o añades frases, regénéralos con `python scripts/generar-audio-frances.py` (necesita `pip install edge-tts`).
 
+La canción la canta esa misma voz: `scripts/cantar-frances.py` pide cada sílaba de `frances/cancion.json` y, con Praat (`praat-parselmouth`), la afina a su nota y la alarga a su duración. Genera `frances/audio/cancion-92.mp3` y `cancion-132.mp3` (lenta y rápida). El juego toca la melodía y el bajo leyendo el mismo `cancion.json`, así que si cambias la partitura, vuelve a ejecutar el script.
+
 Mi cuerpo en francés carga directamente `../js/core.js`, `sonido.js` y `perfiles.js`, así que comparte también los sonidos, las estrellas y la pantalla de resultado.
 
 El progreso queda en cada dispositivo: no se sincroniza entre la tablet y el móvil.
