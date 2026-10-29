@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isla de Juegos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="topbar" id="topbar" hidden>
+  <button class="me" id="btn-switch" title="Cambiar de jugador">
+    <span class="me-face" id="me-face"></span>
+    <span class="me-name" id="me-name"></span>
+  </button>
+  <span class="star-pill" id="me-stars" title="Estrellas conseguidas">⭐ 0</span>
+  <div class="tools">
+    <button class="tool" id="btn-music" aria-pressed="false" title="Música">🎵</button>
+    <button class="tool" id="btn-voice" aria-pressed="true" title="Leer en voz alta">🗣️</button>
+    <button class="tool home" id="btn-home" title="Volver a la isla">🏝️</button>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- PERFILES -->
+  <section class="screen" id="s-profile">
+    <div class="hero">
+      <h1 class="logo"><span>Isla</span><span>de</span><span>Juegos</span></h1>
+      <p class="lead">Juegos para aprender riendo</p>
+    </div>
+    <div class="panel" id="who-wrap" hidden>
+      <h2>¿Quién juega hoy?</h2>
+      <div class="who-list" id="who-list"></div>
+    </div>
+    <form class="panel" id="profile-form" novalidate>
+      <h2 id="form-title">¡Hola! ¿Cómo te llamas?</h2>
+      <label for="f-name">Tu nombre</label>
+      <input class="text-in" id="f-name" maxlength="16" autocomplete="off" placeholder="Escribe tu nombre">
+      <label>Elige tu avatar</label>
+      <div class="avatars" id="avatars"></div>
+      <label>Tu color favorito</label>
+      <div class="colors" id="colors"></div>
+      <p class="error" id="f-error" role="alert"></p>
+      <button class="btn big go" type="submit">¡A jugar! 🚀</button>
+    </form>
+  </section>
+
+  <!-- MENÚ -->
+  <section class="screen" id="s-menu" hidden>
+    <h2 class="hello" id="menu-hello"></h2>
+    <p class="lead">¿A qué jugamos?</p>
+    <div class="islands">
+      <button class="island i-donde" data-game="donde">
+        <span class="island-art" aria-hidden="true"><b>🌴</b><i>⚽</i></span>
+        <span class="island-name">¿Dónde está?</span>
+        <span class="island-sub">Derecha, izquierda, encima y debajo</span>
+        <span class="island-best" data-best="donde"></span>
+      </button>
+      <button class="island i-mates" data-game="mates">
+        <span class="island-art" aria-hidden="true"><b>➕</b><i>✖️</i></span>
+        <span class="island-name">Mates mágicas</span>
+        <span class="island-sub">Sumas llevando y multiplicaciones</span>
+        <span class="island-best" data-best="mates"></span>
+      </button>
+      <button class="island i-mapa" data-game="mapa">
+        <span class="island-art" aria-hidden="true"><b>🗺️</b><i>📍</i></span>
+        <span class="island-name">Mapa de España</span>
+        <span class="island-sub">Las comunidades autónomas</span>
+        <span class="island-best" data-best="mapa"></span>
+      </button>
+      <a class="island i-lectura" href="lectura/">
+        <span class="island-art" aria-hidden="true"><b>📖</b><i>🦉</i></span>
+        <span class="island-name">Leo y Comprendo</span>
+        <span class="island-sub">Lee frases y cuentos y responde</span>
+        <span class="island-best" data-best="lectura"></span>
+      </a>
+      <div class="island soon" aria-hidden="true">
+        <span class="island-art"><b>🎁</b></span>
+        <span class="island-name">¡Muy pronto!</span>
+        <span class="island-sub">Más juegos en camino</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- JUEGO 1: ¿DÓNDE ESTÁ? -->
+  <section class="screen" id="s-donde" hidden>
+    <div class="game-head">
+      <h2>¿Dónde está?</h2>
+      <div class="dots" id="donde-dots"></div>
+    </div>
+    <div class="board">
+      <p class="question" id="donde-q"></p>
+      <div class="scene" id="donde-scene">
+        <div class="scene-sun" aria-hidden="true"></div>
+        <div class="scene-grass" aria-hidden="true"></div>
+        <span class="ref" id="donde-ref"></span>
+        <button class="slot" data-pos="encima" aria-label="Encima"></button>
+        <button class="slot" data-pos="debajo" aria-label="Debajo"></button>
+        <button class="slot" data-pos="izquierda" aria-label="A la izquierda"></button>
+        <button class="slot" data-pos="derecha" aria-label="A la derecha"></button>
+        <span class="thing" id="donde-thing"></span>
+      </div>
+      <div class="hands" id="donde-hands" hidden>
+        <span>✋ <b>izquierda</b></span><span><b>derecha</b> ✋</span>
+      </div>
+      <div class="answers" id="donde-answers"></div>
+      <div class="row">
+        <button class="btn ghost" id="donde-say">🔊 Repetir</button>
+        <button class="btn ghost" id="donde-hint">💡 ¿Cuál es mi derecha?</button>
+        <button class="btn go" id="donde-next" hidden>Siguiente ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- JUEGO 2: MATES -->
+  <section class="screen" id="s-mates" hidden>
+    <div class="game-head">
+      <h2>Mates mágicas</h2>
+    </div>
+    <div class="mates-pick">
+      <div class="pick-card p-sum">
+        <span class="pick-icon">+</span>
+        <h3>Sumas llevando</h3>
+        <p>¿De cuántas cifras?</p>
+        <div class="chips" id="digit-chips">
+          <button class="chip" data-d="1" aria-pressed="false">1</button>
+          <button class="chip" data-d="2" aria-pressed="true">2</button>
+          <button class="chip" data-d="3" aria-pressed="false">3</button>
+          <button class="chip" data-d="4" aria-pressed="false">4</button>
+        </div>
+        <button class="btn go big" id="go-sum">¡A sumar!</button>
+      </div>
+      <div class="pick-card p-mul">
+        <span class="pick-icon">×</span>
+        <h3>Multiplicaciones</h3>
+        <p>Del 1 al 10, con ayuda de dibujos</p>
+        <button class="btn grape big" id="go-mul">¡A multiplicar!</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-sum" hidden>
+    <div class="game-head">
+      <h2 id="sum-title">Suma 1 de 5</h2>
+      <div class="dots" id="sum-dots"></div>
+    </div>
+    <div class="board">
+      <p class="tip">Empieza por la <b>derecha</b>. Si una columna suma 10 o más, escribe abajo las unidades y toca el cuadradito rosa de arriba para <b>llevarte 1</b>.</p>
+      <div class="sum-wrap"><div class="sum-grid" id="sum-board"></div></div>
+      <div class="row">
+        <button class="btn ghost" id="sum-clear">🧽 Borrar</button>
+        <button class="btn go big" id="sum-check">✅ Comprobar</button>
+        <button class="btn grape big" id="sum-next" hidden>Siguiente ➜</button>
+      </div>
+      <p class="feedback" id="sum-feedback" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="screen" id="s-mul-intro" hidden>
+    <div class="board center">
+      <h2>¿Qué es multiplicar?</h2>
+      <p class="big-text">Multiplicar es <b>sumar el mismo número varias veces</b>.</p>
+      <p class="mul-line small"><span id="ex-a"></span><span class="x">×</span><span id="ex-b"></span></p>
+      <p class="big-text" id="ex-explain"></p>
+      <div class="groups big" id="ex-groups"></div>
+      <p class="sum-text" id="ex-sum"></p>
+      <div class="row">
+        <button class="btn ghost" id="ex-other">🔄 Otro ejemplo</button>
+        <button class="btn go big" id="ex-go">¡Entendido! 🚀</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-mul" hidden>
+    <div class="game-head">
+      <h2 id="mul-title">Multiplicación 1 de 5</h2>
+      <div class="dots" id="mul-dots"></div>
+    </div>
+    <div class="board">
+      <div class="mul-line">
+        <span id="mul-a"></span><span class="x">×</span><span id="mul-b"></span><span>=</span>
+        <input class="mul-input" id="mul-input" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Resultado">
+      </div>
+      <div id="mul-hint" hidden>
+        <p class="sum-text" id="hint-sum"></p>
+        <div class="groups" id="hint-groups"></div>
+      </div>
+      <div class="row">
+        <button class="btn ghost" id="mul-hint-btn">💡 Pista</button>
+        <button class="btn go big" id="mul-check">✅ Comprobar</button>
+        <button class="btn grape big" id="mul-next" hidden>Siguiente ➜</button>
+      </div>
+      <p class="feedback" id="mul-feedback" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- JUEGO 3: MAPA -->
+  <section class="screen" id="s-mapa" hidden>
+    <div class="game-head">
+      <h2>Mapa de España</h2>
+      <div class="chips" id="mapa-mode">
+        <button class="chip" data-mode="jugar" aria-pressed="true">🎯 Jugar</button>
+        <button class="chip" data-mode="explorar" aria-pressed="false">🔍 Explorar</button>
+      </div>
+    </div>
+    <p class="question small" id="mapa-q"></p>
+    <div class="mapa-layout">
+      <div class="map-box">
+        <svg id="mapa-svg" role="img" aria-label="Mapa de España por comunidades autónomas"></svg>
+      </div>
+      <div class="names-box">
+        <p class="names-title" id="mapa-count"></p>
+        <div class="names" id="mapa-names"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="screen" id="s-result" hidden>
+    <div class="board center result">
+      <div class="res-face" id="res-face">🏆</div>
+      <h2 id="res-title"></h2>
+      <div class="res-stars" id="res-stars"></div>
+      <p class="big-text" id="res-msg"></p>
+      <div class="row">
+        <button class="btn go big" id="res-again">🔁 Otra vez</button>
+        <button class="btn ghost" id="res-menu">🏝️ Otros juegos</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Capa de reacciones: alegría y pena -->
+<div class="react" id="react" aria-hidden="true"><span class="react-face" id="react-face"></span><span class="react-text" id="react-text"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
+<script src="js/core.js"></script>
+<script src="js/sonido.js"></script>
+<script src="js/perfiles.js"></script>
+<script src="js/juego-donde.js"></script>
+<script src="js/juego-mates.js"></script>
+<script src="js/mapa-datos.js"></script>
+<script src="js/juego-mapa.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

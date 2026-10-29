@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<script>window.LEO_HUB = '../';</script>
+<title>Leo y Comprendo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Grandstander:wght@600;800&display=swap">
+<style>
+/* Cuaderno de lectura: una columna central; la lectura va en una hoja pautada con margen rojo y el camino de niveles es una secuencia real (1 → 4). */
+:root {
+  --paper: #EDF3FA;
+  --card: #FFFFFF;
+  --ink: #1C2A4E;
+  --muted: #56678D;
+  --line: #C8D6EE;
+  --soft: #E1EAF7;
+  --accent: #2C5FCC;
+  --accent-ink: #FFFFFF;
+  --margin: #E0705F;
+  --sun: #EFA912;
+  --good: #1F8048;
+  --good-bg: #DFF3E6;
+  --oops: #B9493A;
+  --oops-bg: #FBE7E2;
+  --hl: #FFE992;
+  --c1: #3DB38A;
+  --c2: #3E8FE0;
+  --c3: #EFA912;
+  --c4: #E0705F;
+  --shadow: 0 1px 0 rgba(28,42,78,.06), 0 8px 24px -12px rgba(28,42,78,.25);
+  --f-display: 'Grandstander', 'Trebuchet MS', system-ui, sans-serif;
+  --f-read: 'Andika', Verdana, system-ui, sans-serif;
+  --scale: 1;
+  --radius: 18px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111a2e; --card: #18233f; --ink: #ECF1FF; --muted: #A3B2D6; --line: #2C3B62;
+    --soft: #223053; --accent: #7EA2FF; --accent-ink: #0E1830; --margin: #EE8A7C; --sun: #FFC845;
+    --good: #6BD69A; --good-bg: #163526; --oops: #F59A8B; --oops-bg: #3A1F1C; --hl: #5C4C10;
+    --c1: #4CCB9E; --c2: #69A9F2; --c3: #FFC845; --c4: #EE8A7C;
+    --shadow: 0 1px 0 rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111a2e; --card: #18233f; --ink: #ECF1FF; --muted: #A3B2D6; --line: #2C3B62;
+  --soft: #223053; --accent: #7EA2FF; --accent-ink: #0E1830; --margin: #EE8A7C; --sun: #FFC845;
+  --good: #6BD69A; --good-bg: #163526; --oops: #F59A8B; --oops-bg: #3A1F1C; --hl: #5C4C10;
+  --c1: #4CCB9E; --c2: #69A9F2; --c3: #FFC845; --c4: #EE8A7C;
+  --shadow: 0 1px 0 rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-read);
+  font-size: 17px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+
+.top {
+  max-width: 780px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding-block: 14px 6px; flex-wrap: wrap;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px;
+  font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; border-radius: 12px;
+}
+.brand em { font-style: normal; color: var(--margin); }
+.top-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.top-r a.ghost { text-decoration: none; color: var(--ink); }
+.face {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem;
+  border: 2px solid var(--ink);
+}
+.chip {
+  font-weight: 700; background: var(--card); border: 2px solid var(--line); border-radius: 999px;
+  padding: 4px 12px; font-variant-numeric: tabular-nums;
+}
+
+.wrap { max-width: 780px; margin: 0 auto; padding-block: 8px 48px; display: flex; flex-direction: column; gap: 20px; }
+
+/* Buttons */
+.btn {
+  border: 0; border-radius: 14px; padding: 12px 20px; font-weight: 700; font-size: 1.05rem;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.btn:active { transform: translateY(1px) scale(.99); }
+.primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 60%, #000); }
+.primary:hover { transform: translateY(-1px); }
+.big { font-size: 1.25rem; padding: 16px 28px; border-radius: 18px; }
+.soft { background: var(--soft); color: var(--ink); }
+.soft:hover { background: color-mix(in srgb, var(--soft) 80%, var(--accent)); }
+.ghost {
+  background: transparent; border: 2px solid var(--line); border-radius: 12px; padding: 6px 14px; font-weight: 700;
+}
+.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.icon {
+  background: var(--soft); border: 0; border-radius: 12px; min-width: 44px; height: 44px; font-size: 1.15rem; padding: 0 10px;
+}
+.icon:hover { background: color-mix(in srgb, var(--soft) 75%, var(--accent)); }
+.icon[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+/* Home */
+.hello { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 8px; }
+.hello h1 { font-size: clamp(2rem, 1.4rem + 3vw, 2.9rem); font-weight: 800; }
+.lead { margin: 6px 0 0; color: var(--muted); font-size: 1.1rem; max-width: 34ch; }
+.hello .owl { flex: none; }
+.nameform {
+  background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.nameform label { font-weight: 700; flex-basis: 100%; }
+.nameform input, .field input {
+  flex: 1 1 180px; min-width: 0; font: inherit; font-size: 1.15rem; padding: 10px 14px; border-radius: 12px;
+  border: 2px solid var(--line); background: var(--paper); color: var(--ink);
+}
+
+.path { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; position: relative; }
+.path::before {
+  content: ""; position: absolute; left: 33px; top: 30px; bottom: 30px;
+  border-left: 4px dashed var(--line);
+}
+.stop {
+  position: relative; width: 100%; text-align: left; display: grid; grid-template-columns: 70px 1fr auto;
+  align-items: center; gap: 14px; background: var(--card); border: 2px solid transparent; border-radius: 22px;
+  padding: 14px 18px 14px 0; box-shadow: var(--shadow); transition: transform .15s ease, border-color .15s ease;
+}
+.stop:hover { transform: translateX(4px); border-color: var(--line); }
+.stop .num {
+  justify-self: center; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--f-display); font-weight: 800; font-size: 1.5rem; color: #fff; background: var(--lc);
+  box-shadow: 0 0 0 6px var(--card);
+}
+.stop .ttl { display: block; font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; line-height: 1.15; }
+.stop .desc { display: block; margin: 2px 0 8px; color: var(--muted); }
+.stop .meta { min-width: 0; display: flex; flex-direction: column; }
+.bar { display: block; height: 10px; border-radius: 99px; background: var(--soft); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 99px; background: var(--lc, var(--accent)); }
+.count { font-size: .92rem; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.badge {
+  font-family: var(--f-display); font-weight: 800; font-size: .85rem; background: var(--hl); color: var(--ink);
+  padding: 4px 10px; border-radius: 999px; white-space: nowrap; transform: rotate(-3deg);
+}
+.note { color: var(--muted); text-align: center; margin: 4px 0 0; }
+
+/* List of texts */
+.list-head p { color: var(--muted); margin: 6px 0 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.tile {
+  text-align: left; background: var(--card); border: 2px solid transparent; border-radius: 20px; padding: 16px;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 6px; transition: transform .15s ease, border-color .15s ease;
+}
+.tile:hover { transform: translateY(-3px); border-color: var(--line); }
+.tile .emo { font-size: 2.2rem; line-height: 1; }
+.tile .ttl { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; line-height: 1.2; }
+.tile .st { font-size: .92rem; color: var(--muted); }
+.tile .st.ok { color: var(--good); font-weight: 700; }
+
+/* Play */
+.play-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lvl-tag { font-family: var(--f-display); font-weight: 800; color: var(--muted); }
+.dots { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--soft); border: 2px solid var(--line); }
+.dots i.d-ok { background: var(--sun); border-color: var(--sun); }
+.dots i.d-retry { background: var(--c2); border-color: var(--c2); }
+.dots i.d-now { border-color: var(--accent); transform: scale(1.2); }
+
+.sheet-wrap { display: flex; flex-direction: column; gap: 10px; }
+.sheet {
+  --lh: 2.05em; --pt: .9em;
+  position: relative; background-color: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  font-size: calc(1.5rem * var(--scale)); line-height: var(--lh);
+  padding: var(--pt) 22px calc(var(--pt) + .2em) 64px; margin: 0;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--lh) - 2px), var(--line) calc(var(--lh) - 2px), var(--line) var(--lh));
+  background-position: 0 calc(var(--pt) - .5em);
+  overflow-wrap: anywhere;
+}
+.sheet::before { content: ""; position: absolute; top: 0; bottom: 0; left: 44px; border-left: 2px solid var(--margin); opacity: .7; }
+.sheet h2 { font-size: 1em; line-height: var(--lh); color: var(--accent); }
+.sheet p { margin: 0; }
+.s { border-radius: 6px; transition: background-color .2s ease; }
+.s.ev { background: var(--hl); box-decoration-break: clone; -webkit-box-decoration-break: clone; box-shadow: 0 0 0 3px var(--hl); }
+.s.reading { background: color-mix(in srgb, var(--accent) 18%, transparent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.w { border-radius: 6px; cursor: pointer; }
+.w.mark { background: var(--hl); box-shadow: 0 0 0 2px var(--hl); }
+button.w { background: none; border: 0; padding: 0; font: inherit; line-height: inherit; }
+.w.glos { color: var(--accent); text-decoration: underline dotted 2px; text-underline-offset: 5px; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tools .hint { color: var(--muted); font-size: .92rem; margin-left: auto; }
+.glos-box {
+  background: var(--card); border: 2px dashed var(--accent); border-radius: 14px; padding: 10px 14px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.glos-box b { color: var(--accent); }
+.glos-box p { margin: 0; flex: 1; min-width: 0; }
+.cta-row { display: flex; justify-content: center; padding-top: 4px; }
+.peek { display: flex; justify-content: center; }
+
+.predict {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 22px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.predict .emo { font-size: 3.4rem; line-height: 1; }
+.predict h2 { font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.3rem); color: var(--accent); }
+.predict p { margin: 0; color: var(--muted); max-width: 40ch; font-size: 1.1rem; }
+
+.qbox { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.q-head { display: flex; align-items: center; gap: 10px; }
+.qtype {
+  font-size: .85rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  background: var(--soft); padding: 3px 10px; border-radius: 999px;
+}
+.q-head .icon { margin-left: auto; }
+.q { font-size: calc(1.45rem * var(--scale)); font-family: var(--f-read); font-weight: 700; }
+.opts { display: grid; gap: 10px; }
+.opt {
+  text-align: left; font-size: calc(1.2rem * var(--scale)); padding: 14px 18px; border-radius: 16px;
+  background: var(--paper); border: 3px solid var(--line); display: flex; align-items: center; gap: 12px;
+  transition: transform .12s ease, border-color .12s ease, background-color .12s ease;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); transform: translateX(3px); }
+.opt .mk { margin-left: auto; font-size: 1.3rem; }
+.opt.right { background: var(--good-bg); border-color: var(--good); }
+.opt.wrong { background: var(--oops-bg); border-color: var(--oops); opacity: .75; text-decoration: line-through; text-decoration-color: var(--oops); }
+.opt:disabled { cursor: default; }
+.fb { display: flex; gap: 12px; align-items: center; border-radius: 16px; padding: 12px 14px; flex-wrap: wrap; }
+.fb.ok { background: var(--good-bg); }
+.fb.oops { background: var(--oops-bg); }
+.fb p { margin: 0; font-size: 1.15rem; font-weight: 700; flex: 1 1 200px; min-width: 0; }
+.fb.ok p { color: var(--good); }
+.fb.oops p { color: var(--oops); }
+.fb .btn { margin-left: auto; }
+
+/* Result */
+.result {
+  background: var(--card); border-radius: 26px; box-shadow: var(--shadow); padding: 30px 22px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; overflow: hidden;
+}
+.result h1 { font-size: clamp(1.9rem, 1.3rem + 2.6vw, 2.6rem); }
+.result .score { color: var(--muted); font-size: 1.15rem; margin: 0; }
+.stars { font-size: 2.2rem; letter-spacing: 4px; line-height: 1.2; }
+.stars .off { filter: grayscale(1); opacity: .3; }
+.talk {
+  width: 100%; text-align: left; background: var(--paper); border: 2px dashed var(--c4); border-radius: 18px; padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.talk h3 { font-size: 1.1rem; color: var(--c4); }
+.talk p { margin: 0; font-size: 1.2rem; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.fall { position: absolute; top: -40px; font-size: 1.6rem; animation: fall 2.4s ease-in forwards; pointer-events: none; }
+@keyframes fall { to { transform: translateY(560px) rotate(240deg); opacity: 0; } }
+
+/* Parents */
+.panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.panel h2 { font-size: 1.3rem; }
+.panel p { margin: 0; }
+.muted { color: var(--muted); }
+.field { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.field > label { font-weight: 700; flex-basis: 100%; }
+.switch { display: flex; gap: 10px; align-items: center; font-weight: 700; }
+.switch input { width: 22px; height: 22px; accent-color: var(--accent); }
+.skill { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.skill .nm { font-weight: 700; }
+.skill .pct { font-variant-numeric: tabular-nums; font-weight: 700; }
+.skill .bar { grid-column: 1 / -1; }
+.skill .sub { grid-column: 1 / -1; font-size: .9rem; color: var(--muted); }
+.advice { background: var(--hl); color: var(--ink); border-radius: 14px; padding: 12px 14px; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 700; }
+.tips { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; }
+.danger { background: var(--oops-bg); color: var(--oops); }
+.confirm { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--oops-bg); border-radius: 14px; padding: 12px; }
+.confirm p { flex: 1 1 220px; color: var(--oops); font-weight: 700; }
+
+.owl { display: inline-block; flex: none; }
+
+@media (max-width: 560px) {
+  .sheet { padding-left: 44px; padding-right: 14px; }
+  .sheet::before { left: 28px; }
+  .stop { grid-template-columns: 58px 1fr; padding-right: 14px; }
+  .stop .badge { position: absolute; top: -10px; right: 12px; }
+  .path::before { left: 27px; }
+  .stop .num { width: 44px; height: 44px; font-size: 1.3rem; }
+  .hello .owl svg { width: 72px; height: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ================= CONTENIDO ================= */
+/* La primera opción de cada pregunta es la correcta; se barajan al mostrarlas.
+   k = tipo de pregunta: lit (literal), voc (vocabulario), inf (inferencia), sec (secuencia).
+   ev = índice de la frase del texto donde está la respuesta. */
+
+const N1 = [
+  ['El gato duerme en el sofá.', '¿Dónde duerme el gato?', ['🛋️ En el sofá', '🛏️ En la cama', '🌳 En el jardín']],
+  ['Ana come una manzana roja.', '¿De qué color es la manzana?', ['🔴 Roja', '🟢 Verde', '🟡 Amarilla']],
+  ['Mi abuelo lee el periódico por la mañana.', '¿Qué lee el abuelo?', ['📰 El periódico', '📖 Un cuento', '✉️ Una carta']],
+  ['Pablo tiene dos perros y un pez.', '¿Cuántos perros tiene Pablo?', ['Dos', 'Uno', 'Tres']],
+  ['La niña salta a la comba en el patio.', '¿Qué hace la niña?', ['Salta a la comba', 'Juega a la pelota', 'Lee un libro']],
+  ['Hoy llueve y llevo mi paraguas azul.', '¿Qué tiempo hace hoy?', ['☔ Llueve', '☀️ Hace sol', '❄️ Nieva']],
+  ['El pájaro canta en la rama del árbol.', '¿Quién canta?', ['🐦 El pájaro', '🐶 El perro', '👦 El niño']],
+  ['Lucas se pone las botas para ir al parque.', '¿Adónde va Lucas?', ['🛝 Al parque', '🏫 Al colegio', '🏖️ A la playa']],
+  ['Mamá prepara una tarta de chocolate.', '¿De qué es la tarta?', ['🍫 De chocolate', '🍓 De fresa', '🍋 De limón']],
+  ['El tren sale de la estación a las tres.', '¿A qué hora sale el tren?', ['A las tres', 'A las dos', 'A las cinco']],
+  ['Sara pinta un sol amarillo en su cuaderno.', '¿Dónde pinta Sara?', ['📒 En su cuaderno', '🧱 En la pared', '⬛ En la pizarra']],
+  ['Los peces nadan en el agua del río.', '¿Dónde nadan los peces?', ['En el río', 'En el mar', 'En una pecera']],
+  ['El conejo blanco come zanahorias.', '¿Qué come el conejo?', ['🥕 Zanahorias', '🥬 Lechuga', '🧀 Queso']],
+  ['Por la noche veo la luna desde mi ventana.', '¿Qué veo desde la ventana?', ['🌙 La luna', '☀️ El sol', '✈️ Un avión']],
+  ['Mi hermano pequeño tiene tres años.', '¿Cuántos años tiene mi hermano?', ['Tres', 'Cinco', 'Siete']],
+  ['La profesora escribe en la pizarra con tiza.', '¿Con qué escribe la profesora?', ['Con tiza', 'Con un lápiz', 'Con un rotulador']],
+  ['El viernes vamos a la playa con mis primos.', '¿Cuándo vamos a la playa?', ['El viernes', 'El lunes', 'El domingo']],
+  ['Leo se cae de la bici, pero no se hace daño.', '¿Se hace daño Leo?', ['No, no se hace daño', 'Sí, mucho', 'Se rompe un brazo']],
+  ['La vaca da leche y la gallina pone huevos.', '¿Qué pone la gallina?', ['🥚 Huevos', '🥛 Leche', '🧶 Lana']],
+  ['Carmen lleva una mochila verde y unas zapatillas rojas.', '¿De qué color es la mochila?', ['Verde', 'Roja', 'Azul']]
+].map(([t, q, o], i) => ({ id: 'f' + i, frases: [t], preguntas: [{ q, o, k: 'lit', ev: 0 }] }));
+
+const N2 = [
+  ['Marta no puede dormir porque hay tormenta.', '¿Qué quiere decir la frase?', ['La tormenta no deja dormir a Marta', 'Marta duerme muy bien', 'A Marta le encantan las tormentas'], 'inf'],
+  ['El perro está tan cansado que no quiere jugar.', '¿Qué le pasa al perro?', ['Está cansado y no quiere jugar', 'Quiere jugar mucho', 'Tiene mucha hambre'], 'inf'],
+  ['Hugo se puso el abrigo porque hacía mucho frío.', '¿Por qué se puso Hugo el abrigo?', ['🥶 Porque hacía frío', '🎉 Porque iba a una fiesta', '☔ Porque llovía'], 'inf'],
+  ['La sopa quema: espera un poco antes de comerla.', '¿Qué significa «la sopa quema»?', ['Que está muy caliente', 'Que está muy fría', 'Que está muy rica'], 'voc'],
+  ['Inés sonríe porque ha encontrado su muñeca perdida.', '¿Cómo se siente Inés?', ['😊 Contenta', '😢 Triste', '😠 Enfadada'], 'inf'],
+  ['Daniel llegó tarde al colegio y la puerta ya estaba cerrada.', '¿Qué quiere decir la frase?', ['Cuando Daniel llegó, ya habían cerrado', 'Daniel llegó el primero de todos', 'Daniel no fue al colegio'], 'inf'],
+  ['El elefante es enorme.', '¿Qué significa «enorme»?', ['Muy grande', 'Muy pequeño', 'Muy rápido'], 'voc'],
+  ['Después de cenar, Lola se lava los dientes.', '¿Qué hace Lola primero?', ['🍽️ Cena', '🪥 Se lava los dientes', '😴 Se va a dormir'], 'sec'],
+  ['Mi vecino es muy amable: siempre me ayuda con las bolsas.', '¿Qué significa «amable»?', ['Que trata bien a los demás', 'Que siempre está enfadado', 'Que es muy alto'], 'voc'],
+  ['Pedro tiene los ojos llenos de lágrimas.', '¿Cómo está Pedro?', ['😢 Triste', '😄 Muy contento', '😴 Dormido'], 'inf'],
+  ['Está lloviendo a cántaros.', '¿Qué significa «llover a cántaros»?', ['Que llueve muchísimo', 'Que llueve un poquito', 'Que caen cántaros del cielo'], 'voc'],
+  ['Nadie quiso el último trozo de pizza.', '¿Qué pasó con el último trozo?', ['Nadie se lo comió', 'Se lo comió el perro', 'Se lo comieron entre todos'], 'inf'],
+  ['Clara buscó sus gafas por toda la casa y las tenía puestas en la cabeza.', '¿Dónde estaban las gafas?', ['En la cabeza de Clara', 'En la cocina', 'Debajo de la cama'], 'lit'],
+  ['El pastel desapareció en un minuto.', '¿Qué quiere decir la frase?', ['Que se lo comieron muy deprisa', 'Que se volvió invisible', 'Que nadie lo probó'], 'voc'],
+  ['Rubén estaba nervioso antes de su primer partido.', '¿Qué significa «nervioso»?', ['Inquieto y un poco preocupado', 'Muy dormido', 'Aburrido'], 'voc'],
+  ['Aunque estaba cansada, Elena terminó los deberes.', '¿Qué hizo Elena?', ['Terminó los deberes', 'Dejó los deberes sin hacer', 'Se durmió encima del libro'], 'inf'],
+  ['El ratón salió corriendo al ver al gato.', '¿Por qué corrió el ratón?', ['Porque le daba miedo el gato', 'Porque quería jugar', 'Porque tenía frío'], 'inf'],
+  ['Abre la ventana, que aquí hace mucho calor.', '¿Para qué quiere abrir la ventana?', ['Para que entre aire fresco', 'Para mirar la calle', 'Para que entre el sol'], 'inf']
+].map(([t, q, o, k], i) => ({ id: 's' + i, frases: [t], preguntas: [{ q, o, k, ev: 0 }] }));
+
+const N3 = [
+  { emoji: '🎂', titulo: 'El cumpleaños de Nora',
+    frases: ['Hoy es el cumpleaños de Nora.', 'Cumple ocho años.', 'Sus amigos le regalan un libro de dinosaurios.', 'Nora sopla las velas y todos aplauden.'],
+    preguntas: [
+      { q: '¿Cuántos años cumple Nora?', o: ['Ocho', 'Siete', 'Nueve'], k: 'lit', ev: 1 },
+      { q: '¿Qué le regalan sus amigos?', o: ['🦖 Un libro de dinosaurios', '🪆 Una muñeca', '🚲 Una bici'], k: 'lit', ev: 2 },
+      { q: '¿Qué hacen todos cuando Nora sopla las velas?', o: ['👏 Aplauden', '🎤 Cantan', '🚪 Se van a casa'], k: 'lit', ev: 3 } ] },
+  { emoji: '🍓', titulo: 'El huerto del abuelo',
+    frases: ['Mi abuelo tiene un huerto detrás de su casa.', 'Allí planta tomates, lechugas y fresas.', 'Todas las tardes riega las plantas con una regadera.', 'Yo le ayudo a recoger las fresas cuando ya están rojas.'],
+    preguntas: [
+      { q: '¿Dónde está el huerto?', o: ['Detrás de la casa del abuelo', 'En el colegio', 'Al lado de la playa'], k: 'lit', ev: 0 },
+      { q: '¿Cuándo riega el abuelo?', o: ['Todas las tardes', 'Por la noche', 'Solo los domingos'], k: 'lit', ev: 2 },
+      { q: '¿Cómo sabes que una fresa ya se puede recoger?', o: ['Porque está roja', 'Porque está verde', 'Porque es muy pequeña'], k: 'inf', ev: 3 } ] },
+  { emoji: '🐕', titulo: 'Coco, el perro',
+    frases: ['Coco es un perro pequeño y marrón.', 'Le encanta correr detrás de las palomas.', 'Cuando llega a casa, bebe mucha agua y se tumba en su cojín.', 'Coco siempre acaba agotado después del paseo.'],
+    preguntas: [
+      { q: '¿Cómo es Coco?', o: ['Pequeño y marrón', 'Grande y negro', 'Pequeño y blanco'], k: 'lit', ev: 0 },
+      { q: '¿Detrás de qué le gusta correr?', o: ['🕊️ De las palomas', '🐈 De los gatos', '⚽ De una pelota'], k: 'lit', ev: 1 },
+      { q: '¿Qué significa «agotado»?', o: ['Muy cansado', 'Muy contento', 'Muy sucio'], k: 'voc', ev: 3 } ] },
+  { emoji: '🌈', titulo: 'Un día de lluvia',
+    frases: ['Esta mañana llovía muchísimo.', 'Iker no pudo ir al parque.', 'Se quedó en casa y construyó un castillo con cajas de cartón.', 'Por la tarde salió el sol y vio un arcoíris.'],
+    preguntas: [
+      { q: '¿Por qué no fue Iker al parque?', o: ['Porque llovía mucho', 'Porque estaba malito', 'Porque era de noche'], k: 'inf', ev: 0 },
+      { q: '¿Qué construyó Iker?', o: ['🏰 Un castillo de cartón', '⛵ Un barco de papel', '🧱 Una torre de piezas'], k: 'lit', ev: 2 },
+      { q: '¿Qué pasó al final?', o: ['Salió el sol y vio un arcoíris', 'Empezó a llover más', 'Se fue a dormir'], k: 'sec', ev: 3 } ] },
+  { emoji: '🐞', titulo: 'La mariquita',
+    frases: ['La mariquita es un insecto pequeño.', 'Tiene el cuerpo rojo con puntos negros.', 'Come pulgones, unos bichitos que estropean las plantas.', 'Por eso a los jardineros les gustan mucho las mariquitas.'],
+    preguntas: [
+      { q: '¿Cómo es el cuerpo de la mariquita?', o: ['Rojo con puntos negros', 'Amarillo con rayas', 'Verde y brillante'], k: 'lit', ev: 1 },
+      { q: '¿Qué come la mariquita?', o: ['Pulgones', 'Hojas', 'Flores'], k: 'lit', ev: 2 },
+      { q: '¿Por qué les gustan a los jardineros?', o: ['Porque se comen los bichos que estropean las plantas', 'Porque son muy bonitas', 'Porque cantan por la mañana'], k: 'inf', ev: 3 } ] },
+  { emoji: '📚', titulo: 'En la biblioteca',
+    frases: ['Los martes, Julia va a la biblioteca con su madre.', 'Allí hay que hablar en voz baja.', 'Julia elige dos libros: uno de piratas y otro de animales.', 'Tiene que devolverlos dentro de dos semanas.'],
+    preguntas: [
+      { q: '¿Qué día va Julia a la biblioteca?', o: ['Los martes', 'Los sábados', 'Los lunes'], k: 'lit', ev: 0 },
+      { q: '¿Cómo hay que hablar en la biblioteca?', o: ['🤫 En voz baja', '📢 Gritando', '🎵 Cantando'], k: 'lit', ev: 1 },
+      { q: '¿Se puede quedar Julia los libros para siempre?', o: ['No, tiene que devolverlos', 'Sí, son suyos', 'Sí, si los cuida'], k: 'inf', ev: 3 } ] },
+  { emoji: '🍦', titulo: 'El helado de Mateo',
+    frases: ['Mateo compró un helado de fresa en la playa.', 'Hacía mucho calor.', 'Mateo se quedó mirando a las gaviotas y el helado se derritió.', 'Su hermana le dio un poco del suyo.'],
+    preguntas: [
+      { q: '¿De qué sabor era el helado?', o: ['🍓 De fresa', '🍫 De chocolate', '🍦 De vainilla'], k: 'lit', ev: 0 },
+      { q: '¿Por qué se derritió el helado?', o: ['Hacía calor y Mateo no se lo comía', 'Se le cayó a la arena', 'Una gaviota lo picoteó'], k: 'inf', ev: 2 },
+      { q: '¿Cómo es la hermana de Mateo?', o: ['Generosa: le gusta compartir', 'No le gusta compartir', 'Muy miedosa'], k: 'inf', ev: 3 } ] },
+  { emoji: '🐄', titulo: 'La excursión',
+    frases: ['El jueves, la clase de segundo fue de excursión a una granja.', 'Vieron vacas, ovejas y un caballo muy alto.', 'La granjera les enseñó a dar de comer a los cerdos.', 'Volvieron al colegio en autobús, cansados pero felices.'],
+    preguntas: [
+      { q: '¿Adónde fueron de excursión?', o: ['A una granja', 'Al zoo', 'A un museo'], k: 'lit', ev: 0 },
+      { q: '¿Qué les enseñó la granjera?', o: ['A dar de comer a los cerdos', 'A montar a caballo', 'A cuidar ovejas'], k: 'lit', ev: 2 },
+      { q: '¿Les gustó la excursión?', o: ['Sí, volvieron felices', 'No, se aburrieron', 'No, porque llovió'], k: 'inf', ev: 3 } ] },
+  { emoji: '🌱', titulo: 'La planta de Sofía',
+    frases: ['Sofía plantó una semilla en un vaso de yogur.', 'Lo puso junto a la ventana para que le diera el sol.', 'Cada dos días le echaba un poco de agua.', 'A la semana salió un brote verde.'],
+    preguntas: [
+      { q: '¿Dónde plantó Sofía la semilla?', o: ['En un vaso de yogur', 'En el jardín', 'En una maceta grande'], k: 'lit', ev: 0 },
+      { q: '¿Para qué puso el vaso junto a la ventana?', o: ['Para que le diera el sol', 'Para verlo desde la calle', 'Para que no se mojara'], k: 'inf', ev: 1 },
+      { q: '¿Qué pasó primero?', o: ['Sofía plantó la semilla', 'Salió un brote verde', 'Le echó agua por primera vez'], k: 'sec', ev: 0 } ] },
+  { emoji: '🔦', titulo: 'El ruido de la noche',
+    frases: ['Una noche, Álex oyó un ruido en la cocina.', 'Tenía un poco de miedo, pero fue a mirar con su linterna.', 'Era su gato, que había tirado una cuchara al suelo.', 'Álex se rio y volvió a la cama.'],
+    preguntas: [
+      { q: '¿Dónde oyó Álex el ruido?', o: ['En la cocina', 'En el baño', 'En el jardín'], k: 'lit', ev: 0 },
+      { q: '¿Cómo se sentía Álex al principio?', o: ['😨 Con un poco de miedo', '😄 Muy contento', '🥱 Aburrido'], k: 'inf', ev: 1 },
+      { q: '¿Qué hizo el ruido?', o: ['El gato tiró una cuchara', 'Se rompió un vaso', 'Llamaron a la puerta'], k: 'lit', ev: 2 } ] }
+].map((x, i) => ({ id: 't' + i, ...x }));
+
+const N4 = [
+  { emoji: '🐢', titulo: 'La tortuga que quería volar',
+    prediccion: '¿Crees que una tortuga puede volar? ¿Cómo lo intentaría?',
+    frases: ['En un estanque vivía una tortuga llamada Tula.', 'Todos los días miraba a los patos volar por el cielo.', '—¡Yo también quiero volar! —decía Tula.', 'Un día, dos patos le propusieron una idea.', 'Ellos sujetarían un palo con el pico y Tula lo mordería con la boca.', 'Así subieron muy alto, por encima de los árboles.', 'Tula estaba tan contenta que quiso gritar: «¡Mirad, estoy volando!».', 'Pero al abrir la boca, soltó el palo.', 'Por suerte, cayó en el agua del estanque y no se hizo daño.', 'Desde aquel día, Tula sabe que a veces es mejor estar callada.'],
+    glos: { estanque: 'Un lago pequeño.', propusieron: 'Le dijeron una idea para hacer algo juntos.' },
+    preguntas: [
+      { q: '¿Dónde vivía Tula?', o: ['En un estanque', 'En el bosque', 'En una casa'], k: 'lit', ev: 0 },
+      { q: '¿Cómo consiguió Tula subir al cielo?', o: ['Mordiendo un palo que llevaban los patos', 'Con unas alas de papel', 'Subida en un globo'], k: 'lit', ev: 4 },
+      { q: '¿Por qué se cayó Tula?', o: ['Porque abrió la boca para gritar', 'Porque el palo se rompió', 'Porque los patos la soltaron'], k: 'inf', ev: 7 },
+      { q: '¿Qué significa «le propusieron una idea»?', o: ['Le contaron un plan', 'Le regañaron', 'Le quitaron algo'], k: 'voc', ev: 3 },
+      { q: '¿Qué aprendió Tula?', o: ['Que a veces es mejor estar callada', 'Que las tortugas vuelan solas', 'Que los patos son malos'], k: 'inf', ev: 9 } ],
+    hablar: '¿Alguna vez has querido hacer algo que parecía imposible? ¿Qué hiciste?' },
+  { emoji: '🗼', titulo: 'El secreto del faro',
+    prediccion: 'Un faro es una torre con una luz muy grande junto al mar. ¿Para qué crees que sirve?',
+    frases: ['En un pueblo junto al mar había un faro blanco y rojo.', 'Allí vivía Marcos, el farero, con su gata Brisa.', 'Cada noche, Marcos encendía la gran luz para que los barcos no chocaran con las rocas.', 'Una noche de tormenta, la luz se apagó.', 'Marcos subió corriendo los ciento veinte escalones con una linterna.', 'Arriba descubrió que la bombilla se había fundido.', 'Rápidamente la cambió por una nueva.', 'A lo lejos, un barco de pescadores giró justo a tiempo y llegó al puerto sin problemas.', 'A la mañana siguiente, los pescadores le llevaron a Marcos una caja de pescado fresco para darle las gracias.'],
+    glos: { farero: 'La persona que cuida el faro.', fundido: 'Estropeado: ya no da luz.' },
+    preguntas: [
+      { q: '¿Para qué servía la luz del faro?', o: ['Para que los barcos no chocaran con las rocas', 'Para iluminar la playa', 'Para que el pueblo fuera bonito'], k: 'lit', ev: 2 },
+      { q: '¿Qué pasó primero?', o: ['La luz se apagó', 'Marcos cambió la bombilla', 'Los pescadores le llevaron pescado'], k: 'sec', ev: 3 },
+      { q: '¿Cuántos escalones subió Marcos?', o: ['Ciento veinte', 'Veinte', 'Mil'], k: 'lit', ev: 4 },
+      { q: '¿Qué le pasaba a la luz?', o: ['La bombilla se había fundido', 'Alguien la había apagado', 'La gata la había roto'], k: 'lit', ev: 5 },
+      { q: '¿Por qué le regalaron pescado a Marcos?', o: ['Para darle las gracias por salvar el barco', 'Porque les sobraba', 'Porque era su cumpleaños'], k: 'inf', ev: 8 } ],
+    hablar: '¿Cómo crees que se sintió Marcos cuando vio llegar el barco al puerto?' },
+  { emoji: '🏅', titulo: 'La carrera de sacos',
+    prediccion: '¿Has hecho alguna vez una carrera de sacos? ¿Qué crees que pasará en este cuento?',
+    frases: ['En la fiesta del colegio había una carrera de sacos.', 'Lía quería ganar, porque el premio era una medalla dorada.', 'Al empezar, Lía saltó tan rápido que se puso la primera.', 'Pero a mitad de camino vio que su amigo Bruno se había caído.', 'Bruno estaba en el suelo y no podía levantarse con el saco.', 'Lía se paró y le ayudó a ponerse de pie.', 'Mientras tanto, los demás niños los adelantaron.', 'Lía y Bruno llegaron juntos a la meta, los últimos.', 'Aun así, la directora les dio una medalla especial: la medalla al compañerismo.', 'Lía pensó que esa medalla valía más que la dorada.'],
+    glos: { compañerismo: 'Ayudar y tratar bien a los compañeros.', adelantaron: 'Pasaron por delante de ellos.' },
+    preguntas: [
+      { q: '¿Cuál era el premio de la carrera?', o: ['Una medalla dorada', 'Una copa', 'Un libro'], k: 'lit', ev: 1 },
+      { q: '¿Por qué se paró Lía?', o: ['Para ayudar a Bruno', 'Porque estaba cansada', 'Porque se había caído ella'], k: 'inf', ev: 5 },
+      { q: '¿En qué puesto llegaron Lía y Bruno?', o: ['Los últimos', 'Los primeros', 'Los segundos'], k: 'lit', ev: 7 },
+      { q: '¿Qué es el «compañerismo»?', o: ['Ayudar y tratar bien a los compañeros', 'Correr muy rápido', 'Ganar siempre'], k: 'voc', ev: 8 },
+      { q: '¿Por qué pensó Lía que su medalla valía más?', o: ['Porque la ganó por ayudar a un amigo', 'Porque era más grande', 'Porque era de chocolate'], k: 'inf', ev: 9 } ],
+    hablar: '¿Tú qué habrías hecho en el lugar de Lía? ¿Por qué?' },
+  { emoji: '🐉', titulo: 'El dragón que tenía frío',
+    prediccion: 'Los dragones suelen echar fuego por la boca. ¿Por qué crees que este dragón tiene frío?',
+    frases: ['En lo alto de una montaña vivía un dragón verde llamado Chispa.', 'Pero Chispa tenía un problema: no sabía echar fuego por la boca.', 'Cuando llegaba el invierno, tiritaba de frío en su cueva.', 'Los otros dragones se reían de él.', 'Un día, una niña del pueblo subió a la montaña buscando a su oveja perdida.', 'Encontró a Chispa tiritando y le regaló su bufanda de lana.', 'Chispa, muy agradecido, la ayudó a buscar la oveja con su vista de dragón.', 'La encontraron escondida detrás de unas rocas.', 'Desde entonces, la niña y el dragón son amigos.', 'Cada invierno, ella le teje una bufanda nueva, y él la lleva volando a ver el mar.'],
+    glos: { tiritaba: 'Temblaba de frío.', agradecido: 'Que quiere dar las gracias por algo bueno.', teje: 'Hace una prenda con hilo o lana.' },
+    preguntas: [
+      { q: '¿Qué problema tenía Chispa?', o: ['No sabía echar fuego', 'No sabía volar', 'Estaba siempre enfadado'], k: 'lit', ev: 1 },
+      { q: '¿Qué significa «tiritaba»?', o: ['Temblaba de frío', 'Dormía', 'Cantaba'], k: 'voc', ev: 2 },
+      { q: '¿Para qué subió la niña a la montaña?', o: ['Para buscar a su oveja', 'Para ver al dragón', 'Para ir de excursión'], k: 'lit', ev: 4 },
+      { q: '¿Por qué ayudó Chispa a la niña?', o: ['Porque ella había sido buena con él', 'Porque se lo mandaron', 'Porque quería la oveja'], k: 'inf', ev: 6 },
+      { q: '¿Qué hace el dragón por la niña cada invierno?', o: ['La lleva volando a ver el mar', 'Le enciende la chimenea', 'Le teje una bufanda'], k: 'lit', ev: 9 } ],
+    hablar: '¿Por qué crees que los otros dragones se reían de Chispa? ¿Está bien reírse de alguien?' },
+  { emoji: '🏖️', titulo: 'Un tesoro en la arena',
+    prediccion: 'Mira el título. ¿Qué tesoro crees que puede haber escondido en la arena?',
+    frases: ['El domingo, Daniela fue con su familia a la playa de Las Teresitas.', 'Mientras hacía un castillo de arena, su pala chocó con algo duro.', 'Era una caja de metal pequeña y oxidada.', 'Daniela la abrió con cuidado.', 'Dentro había una nota escrita a mano: «Si encuentras esta caja, deja algo tuyo y vuelve a enterrarla».', 'También había una canica azul, una concha y la foto de un perro.', 'Daniela pensó un rato qué podía dejar.', 'Al final, sacó de su bolsillo una goma de borrar con forma de fresa.', 'La metió en la caja, la cerró y la enterró otra vez.', 'Ahora Daniela se pregunta quién será la próxima persona que la encuentre.'],
+    glos: { oxidada: 'Vieja y estropeada por el agua y el paso del tiempo.', enterrarla: 'Volver a meterla debajo de la arena.' },
+    preguntas: [
+      { q: '¿Adónde fue Daniela el domingo?', o: ['A la playa de Las Teresitas', 'Al parque', 'A la montaña'], k: 'lit', ev: 0 },
+      { q: '¿Cómo encontró la caja?', o: ['Su pala chocó con ella', 'La vio flotando en el agua', 'Se la dio su padre'], k: 'lit', ev: 1 },
+      { q: '¿Qué significa «oxidada»?', o: ['Vieja y estropeada', 'Nueva y brillante', 'Muy grande'], k: 'voc', ev: 2 },
+      { q: '¿Qué pedía la nota?', o: ['Dejar algo tuyo y volver a enterrarla', 'Llevarse la caja a casa', 'Tirar la caja al mar'], k: 'lit', ev: 4 },
+      { q: '¿Qué dejó Daniela dentro?', o: ['Una goma con forma de fresa', 'Una canica azul', 'Una concha'], k: 'lit', ev: 7 } ],
+    hablar: 'Si tú encontraras la caja, ¿qué dejarías dentro? ¿Por qué?' },
+  { emoji: '🤖', titulo: 'El robot que no sabía sonreír',
+    prediccion: '¿Pueden sentir cosas los robots? ¿Qué crees que le pasará a este?',
+    frases: ['Pim era un robot que trabajaba en una panadería.', 'Sabía amasar el pan, encender el horno y contar monedas.', 'Pero había algo que Pim no sabía hacer: sonreír.', 'Los clientes le decían «buenos días» y Pim solo contestaba «pan, un euro».', 'Un día entró una niña llorando porque se había perdido y no encontraba a su madre.', 'Pim no sabía qué hacer, así que le dio una magdalena calentita.', 'La niña dejó de llorar y le dio las gracias con una gran sonrisa.', 'Pim notó algo extraño en sus cables, algo cálido y agradable.', 'Poco después llegó la madre y abrazó a su hija.', 'Esa tarde, por primera vez, en la cara de Pim apareció una pequeña sonrisa.'],
+    glos: { amasar: 'Mezclar y apretar la masa con las manos para hacer pan.', cálido: 'Calentito y agradable.' },
+    preguntas: [
+      { q: '¿Dónde trabajaba Pim?', o: ['🥖 En una panadería', '🏫 En un colegio', '🏥 En un hospital'], k: 'lit', ev: 0 },
+      { q: '¿Qué era lo que Pim no sabía hacer?', o: ['Sonreír', 'Amasar el pan', 'Contar monedas'], k: 'lit', ev: 2 },
+      { q: '¿Por qué lloraba la niña?', o: ['Se había perdido y no encontraba a su madre', 'Se había caído', 'No tenía dinero para pan'], k: 'lit', ev: 4 },
+      { q: '¿Qué crees que sintió Pim «en sus cables»?', o: ['Alegría por haber ayudado', 'Mucho frío', 'Que se iba a romper'], k: 'inf', ev: 7 },
+      { q: '¿Qué pasó justo después de que Pim le diera la magdalena?', o: ['La niña dejó de llorar', 'Llegó la madre', 'Pim cerró la panadería'], k: 'sec', ev: 6 } ],
+    hablar: '¿Qué cosas te hacen sonreír a ti? ¿Cuándo has ayudado tú a alguien?' }
+].map((x, i) => ({ id: 'c' + i, ...x }));
+
+const LEVELS = [
+  { n: 1, name: 'Frases', sub: 'Lee una frase y responde a la pregunta.', items: N1, mode: 'batch', color: 'var(--c1)' },
+  { n: 2, name: '¿Qué significa?', sub: 'Piensa qué quiere decir la frase.', items: N2, mode: 'batch', color: 'var(--c2)' },
+  { n: 3, name: 'Textos cortos', sub: 'Un párrafo con tres preguntas.', items: N3, mode: 'pick', color: 'var(--c3)' },
+  { n: 4, name: 'Cuentos', sub: 'Historias más largas para pensar y hablar.', items: N4, mode: 'pick', color: 'var(--c4)', predict: true, hideText: true }
+];
+
+const TYPES = {
+  lit: { name: 'Lo que dice el texto', short: 'Buscar en el texto',
+    tip: 'Mientras leéis cualquier libro, parad y preguntad: ¿quién?, ¿qué?, ¿dónde?, ¿cuándo? Que señale con el dedo dónde lo pone.' },
+  voc: { name: 'Palabras y expresiones', short: 'Palabras',
+    tip: 'Cuando salga una palabra nueva, pídele que adivine qué significa por el resto de la frase antes de explicársela.' },
+  inf: { name: 'Pensar y deducir', short: 'Pensar',
+    tip: 'Haz preguntas cuya respuesta no está escrita: «¿por qué crees que...?», «¿cómo se siente...?». Pide siempre una pista del texto.' },
+  sec: { name: 'Orden de los hechos', short: 'Orden',
+    tip: 'Al acabar un cuento, pídele que te lo cuente usando «primero», «después» y «al final».' }
+};
+
+const OK1 = ['¡Muy bien!', '¡Eso es!', '¡Lo has entendido!', '¡Genial!', '¡Fenomenal!', '¡Lo has encontrado!'];
+const OK2 = ['¡Ahora sí! Volver a leer funciona.', '¡Bien! Lo has encontrado en el texto.', '¡Muy bien! Buscar la pista ayuda.'];
+const OOPS = ['Casi. Lee otra vez la parte amarilla y prueba de nuevo.', 'Mmm, no es esa. La pista está en la parte amarilla.', 'Vuelve a leer lo amarillo despacito. ¡Tú puedes!'];
+
+/* ================= ESTADO ================= */
+/* Dentro de la Isla de Juegos (versión de GitHub) se usa el jugador elegido allí:
+   el nombre y el avatar se eligen una sola vez para todos los juegos. */
+const HUB = typeof window.LEO_HUB === 'string' ? window.LEO_HUB : null;
+const HUB_KEYS = { list: 'peques.jugadores', current: 'peques.actual' };
+function readJSON(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; }
+}
+function hubPlayer() {
+  if (!HUB) return null;
+  const id = readJSON(HUB_KEYS.current, null);
+  return readJSON(HUB_KEYS.list, []).find(p => p.id === id) || null;
+}
+const PLAYER = hubPlayer();
+if (HUB && !PLAYER) location.replace(HUB);
+
+/* Suma las estrellas y la mejor marca a la ficha del jugador de la Isla de Juegos. */
+function syncHub(ok, n) {
+  if (!PLAYER || !n) return;
+  const list = readJSON(HUB_KEYS.list, []).map(p => {
+    if (p.id !== PLAYER.id) return p;
+    const prev = (p.best || {}).lectura;
+    const better = !prev || ok / n > prev.score / prev.total;
+    return { ...p, stars: (p.stars || 0) + ok, best: better ? { ...(p.best || {}), lectura: { score: ok, total: n } } : p.best };
+  });
+  try { localStorage.setItem(HUB_KEYS.list, JSON.stringify(list)); } catch (e) { /* sin almacenamiento */ }
+}
+function starCount() {
+  if (!PLAYER) return S.stars || 0;
+  const p = readJSON(HUB_KEYS.list, []).find(x => x.id === PLAYER.id);
+  return p ? p.stars || 0 : 0;
+}
+const displayName = () => (PLAYER ? PLAYER.name : S.name);
+
+const KEY = 'leo-y-comprendo.v1' + (PLAYER ? '.' + PLAYER.id : '');
+const DEFAULTS = { name: '', audio: true, size: 1, stars: 0, prog: {}, stats: {}, hist: [] };
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY) || 'null');
+    return raw && typeof raw === 'object' ? { ...DEFAULTS, ...raw } : { ...DEFAULTS };
+  } catch (e) { return { ...DEFAULTS }; }
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento: la app sigue funcionando */ } }
+function setS(patch) { S = { ...S, ...patch }; save(); applySize(); render(); }
+
+let S = load();
+let view = { name: 'home' };
+let P = null;
+
+/* ================= UTILIDADES ================= */
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v === false || v == null) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+const clean = t => t.replace(/[\p{Extended_Pictographic}️]/gu, '').replace(/[«»—]/g, ' ').trim();
+function applySize() { document.documentElement.style.setProperty('--scale', String(S.size)); }
+
+function owl(size = 64, mood = 'happy') {
+  const eyes = mood === 'happy'
+    ? '<path d="M27 40 q6 -6 12 0" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M61 40 q6 -6 12 0" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="33" cy="40" r="5" fill="currentColor"/><circle cx="67" cy="40" r="5" fill="currentColor"/>';
+  const span = document.createElement('span');
+  span.className = 'owl';
+  span.style.color = 'var(--ink)';
+  span.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M18 22 L30 8 L40 22 Z" fill="var(--accent)"/><path d="M82 22 L70 8 L60 22 Z" fill="var(--accent)"/>
+    <ellipse cx="50" cy="56" rx="38" ry="40" fill="var(--accent)"/>
+    <ellipse cx="50" cy="70" rx="22" ry="22" fill="var(--soft)"/>
+    <circle cx="33" cy="40" r="15" fill="var(--card)"/><circle cx="67" cy="40" r="15" fill="var(--card)"/>
+    ${eyes}
+    <path d="M44 52 L56 52 L50 62 Z" fill="var(--sun)"/>
+    <path d="M38 96 h8 M54 96 h8" stroke="var(--sun)" stroke-width="5" stroke-linecap="round"/>
+  </svg>`;
+  return span;
+}
+
+/* ================= VOZ ================= */
+const canSpeak = typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined';
+function spanishVoice() {
+  try {
+    const vs = speechSynthesis.getVoices();
+    return vs.find(v => v.lang === 'es-ES') || vs.find(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+  } catch (e) { return null; }
+}
+let speechRun = 0;
+function stopSpeech() { speechRun++; if (canSpeak) { try { speechSynthesis.cancel(); } catch (e) { /* nada */ } } }
+function speakList(list, onEach, onDone) {
+  if (!canSpeak) return;
+  stopSpeech();
+  const run = speechRun;
+  let i = 0;
+  const step = () => {
+    if (run !== speechRun) return;
+    if (i >= list.length) { onDone && onDone(); return; }
+    const u = new SpeechSynthesisUtterance(clean(list[i]));
+    u.lang = 'es-ES'; u.rate = 0.85;
+    const v = spanishVoice(); if (v) u.voice = v;
+    onEach && onEach(i);
+    u.onend = () => { i++; step(); };
+    u.onerror = () => { if (run === speechRun) onDone && onDone(); };
+    speechSynthesis.speak(u);
+  };
+  step();
+}
+
+/* ================= PROGRESO ================= */
+const MASTERED = 0.75;
+function mastery(L) {
+  const done = L.items.filter(it => (S.prog[it.id] || 0) >= MASTERED).length;
+  return { done, total: L.items.length };
+}
+function recommended() {
+  return LEVELS.find(L => { const m = mastery(L); return m.done / m.total < 0.7; }) || LEVELS[LEVELS.length - 1];
+}
+function pickBatch(L, n = 5) {
+  return L.items
+    .map(it => ({ it, r: (S.prog[it.id] || 0) + Math.random() * 0.6 }))
+    .sort((a, b) => a.r - b.r)
+    .slice(0, n)
+    .map(x => x.it);
+}
+
+/* ================= NAVEGACIÓN ================= */
+function go(v) { stopSpeech(); view = v; render(); window.scrollTo(0, 0); }
+function setP(patch) { P = { ...P, ...patch }; render(); }
+function curCard() { return P.cards[P.ci]; }
+function curQ() { return curCard().preguntas[P.qi]; }
+function questionPatch(card, qi) {
+  return { qi, order: shuffle(card.preguntas[qi].o.map((_, i) => i)), tries: 0, wrong: new Set(), ev: null, feedback: null, locked: false };
+}
+function startSession(L, cards) {
+  P = {
+    L, cards, ci: 0, phase: L.predict ? 'predict' : 'read', showText: true, marks: new Set(), glos: null, reading: null,
+    results: [], cardRes: cards.map(() => ({ ok: 0, n: 0 })), ...questionPatch(cards[0], 0)
+  };
+  go({ name: 'play' });
+}
+function startLevel(L) {
+  if (L.mode === 'batch') startSession(L, pickBatch(L));
+  else go({ name: 'list', L });
+}
+
+/* ================= VISTAS ================= */
+function render() {
+  const app = document.getElementById('app');
+  const views = { home: viewHome, list: viewList, play: viewPlay, result: viewResult, parents: viewParents };
+  app.replaceChildren(header(), (views[view.name] || viewHome)());
+  afterRender();
+}
+function afterRender() {
+  const nb = document.getElementById('next-btn');
+  if (nb) { nb.focus({ preventScroll: true }); nb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+}
+
+function header() {
+  return h('header', { class: 'top' },
+    h('button', { class: 'brand', onclick: () => go({ name: 'home' }), 'aria-label': 'Ir al inicio' },
+      owl(40), h('span', null, 'Leo ', h('em', null, 'y'), ' Comprendo')),
+    h('div', { class: 'top-r' },
+      HUB ? h('a', { class: 'ghost', href: HUB }, '🏝️ Juegos') : null,
+      PLAYER ? h('span', { class: 'face', style: `background:${PLAYER.color || 'var(--sun)'}`, title: PLAYER.name }, PLAYER.avatar || '🙂') : null,
+      h('span', { class: 'chip', title: 'Estrellas conseguidas' }, '⭐ ', String(starCount())),
+      h('button', { class: 'ghost', onclick: () => go({ name: 'parents' }) }, 'Familia')));
+}
+
+function viewHome() {
+  const rec = recommended();
+  return h('main', { class: 'wrap' },
+    h('section', { class: 'hello' },
+      h('div', null,
+        h('h1', null, displayName() ? `¡Hola, ${displayName()}!` : '¡Hola, lectora!'),
+        h('p', { class: 'lead' }, 'Elige una parada del camino. Primero lee despacio y después responde.')),
+      owl(104)),
+    displayName() || PLAYER ? null : nameForm(),
+    h('ol', { class: 'path' }, LEVELS.map(L => levelStop(L, L === rec))),
+    h('p', { class: 'note' }, 'Toca cualquier palabra para marcarla con el dedo mientras lees.'));
+}
+
+function nameForm() {
+  const input = h('input', { id: 'nombre-inicio', type: 'text', maxlength: '20', placeholder: 'Escribe tu nombre', autocomplete: 'off' });
+  const submit = e => { e.preventDefault(); const v = input.value.trim(); if (v) setS({ name: v }); };
+  return h('form', { class: 'nameform', onsubmit: submit },
+    h('label', { for: 'nombre-inicio' }, '¿Cómo te llamas?'), input,
+    h('button', { class: 'btn primary', type: 'submit' }, 'Guardar'));
+}
+
+function levelStop(L, isRec) {
+  const m = mastery(L);
+  const pct = Math.round((m.done / m.total) * 100);
+  const unit = L.mode === 'batch' ? 'frases' : (L.n === 3 ? 'textos' : 'cuentos');
+  return h('li', null,
+    h('button', { class: 'stop', style: `--lc:${L.color}`, onclick: () => startLevel(L) },
+      h('span', { class: 'num' }, String(L.n)),
+      h('span', { class: 'meta' },
+        h('span', { class: 'ttl' }, L.name),
+        h('span', { class: 'desc' }, L.sub),
+        h('span', { class: 'bar', role: 'progressbar', 'aria-valuenow': String(pct), 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-label': `Progreso de ${L.name}` },
+          h('i', { style: `width:${pct}%` })),
+        h('span', { class: 'count' }, `${m.done} de ${m.total} ${unit} superados`)),
+      isRec ? h('span', { class: 'badge' }, '¡Te toca!') : null));
+}
+
+function viewList() {
+  const L = view.L;
+  return h('main', { class: 'wrap' },
+    h('div', { class: 'play-top' }, h('button', { class: 'ghost', onclick: () => go({ name: 'home' }) }, '← Camino')),
+    h('section', { class: 'list-head' },
+      h('h1', null, `${L.n} · ${L.name}`),
+      h('p', null, L.n === 4 ? 'Elige un cuento. Antes de leerlo, hablad del título.' : 'Elige un texto para leer.')),
+    h('div', { class: 'grid' }, L.items.map(it => {
+      const best = S.prog[it.id];
+      const status = best == null ? 'Nuevo' : best >= MASTERED ? '✓ Superado' : 'Para repasar';
+      return h('button', { class: 'tile', onclick: () => startSession(L, [it]) },
+        h('span', { class: 'emo', 'aria-hidden': 'true' }, it.emoji),
+        h('span', { class: 'ttl' }, it.titulo),
+        h('span', { class: 'st' + (best >= MASTERED ? ' ok' : '') },
+          `${status} · ${it.preguntas.length} preguntas`));
+    })));
+}
+
+function dots() {
+  const total = P.cards.reduce((s, c) => s + c.preguntas.length, 0);
+  const doneQ = P.results.length;
+  const items = [];
+  for (let i = 0; i < total; i++) {
+    const r = P.results[i];
+    const cls = r ? (r.ok ? 'd-ok' : 'd-retry') : (i === doneQ && P.phase === 'ask' ? 'd-now' : '');
+    items.push(h('i', { class: cls }));
+  }
+  return h('div', { class: 'dots', 'aria-label': `Pregunta ${Math.min(doneQ + 1, total)} de ${total}` }, items);
+}
+
+function viewPlay() {
+  const card = curCard();
+  return h('main', { class: 'wrap play' },
+    h('div', { class: 'play-top' },
+      h('button', { class: 'ghost', onclick: () => go({ name: 'home' }) }, '← Salir'),
+      h('span', { class: 'lvl-tag' }, `${P.L.n} · ${P.L.name}`),
+      dots()),
+    P.phase === 'predict' ? predictPanel(card) : textBlock(card),
+    P.phase === 'read'
+      ? h('div', { class: 'cta-row' }, h('button', { class: 'btn primary big', onclick: () => { stopSpeech(); setP({ phase: 'ask', reading: null, showText: !P.L.hideText }); } }, 'Ya lo he leído ✓'))
+      : null,
+    P.phase === 'ask' ? questionBlock(curQ()) : null);
+}
+
+function predictPanel(card) {
+  return h('section', { class: 'predict' },
+    h('span', { class: 'emo', 'aria-hidden': 'true' }, card.emoji),
+    h('h2', null, card.titulo),
+    h('p', null, h('b', null, 'Antes de leer: '), card.prediccion),
+    h('p', null, 'Contádselo en voz alta. Al terminar el cuento veréis si acertasteis.'),
+    h('button', { class: 'btn primary big', onclick: () => setP({ phase: 'read' }) }, '¡A leer!'));
+}
+
+function textBlock(card) {
+  if (P.phase === 'ask' && !P.showText) {
+    return h('div', { class: 'peek' }, h('button', { class: 'btn soft', onclick: () => setP({ showText: true }) }, '📖 Volver a leer el cuento'));
+  }
+  const reading = P.reading != null;
+  const listen = S.audio && canSpeak
+    ? h('button', {
+        class: 'icon', 'aria-pressed': reading ? 'true' : 'false',
+        onclick: () => {
+          if (reading) { stopSpeech(); setP({ reading: null }); return; }
+          speakList(card.frases, i => setP({ reading: i }), () => setP({ reading: null }));
+        }
+      }, reading ? '⏹ Parar' : '🔊 Escuchar')
+    : null;
+  return h('section', { class: 'sheet-wrap' },
+    h('article', { class: 'sheet' },
+      card.titulo ? h('h2', null, card.titulo) : null,
+      h('p', null, card.frases.map((f, si) => [sentenceEl(f, si, card), ' ']))),
+    P.glos ? h('div', { class: 'glos-box', role: 'status' },
+      h('span', { 'aria-hidden': 'true' }, '📖'),
+      h('p', null, h('b', null, P.glos.word), ': ', P.glos.def),
+      h('button', { class: 'icon', 'aria-label': 'Cerrar', onclick: () => setP({ glos: null }) }, '✕')) : null,
+    h('div', { class: 'tools' },
+      h('button', { class: 'icon', 'aria-label': 'Letra más pequeña', onclick: () => setS({ size: Math.max(0.85, +(S.size - 0.15).toFixed(2)) }) }, 'A−'),
+      h('button', { class: 'icon', 'aria-label': 'Letra más grande', onclick: () => setS({ size: Math.min(1.6, +(S.size + 0.15).toFixed(2)) }) }, 'A+'),
+      listen,
+      P.phase === 'ask' && P.L.hideText ? h('button', { class: 'icon', onclick: () => setP({ showText: false, glos: null }) }, 'Ocultar') : null,
+      card.glos ? h('span', { class: 'hint' }, 'Las palabras azules tienen explicación') : null));
+}
+
+function sentenceEl(text, si, card) {
+  const cls = 's' + (P.ev === si ? ' ev' : '') + (P.reading === si ? ' reading' : '');
+  const span = h('span', { class: cls });
+  text.split(/(\s+)/).forEach((tok, wi) => {
+    if (!tok) return;
+    if (/^\s+$/.test(tok)) { span.append(tok); return; }
+    const key = tok.toLowerCase().replace(/[^\p{L}]/gu, '');
+    const def = card.glos && card.glos[key];
+    if (def) {
+      span.append(h('button', { class: 'w glos', onclick: () => setP({ glos: { word: key, def } }) }, tok));
+      return;
+    }
+    const id = `${si}-${wi}`;
+    span.append(h('span', {
+      class: 'w' + (P.marks.has(id) ? ' mark' : ''),
+      onclick: () => { const m = new Set(P.marks); if (m.has(id)) m.delete(id); else m.add(id); setP({ marks: m }); }
+    }, tok));
+  });
+  return span;
+}
+
+function questionBlock(q) {
+  const isLast = P.ci === P.cards.length - 1 && P.qi === curCard().preguntas.length - 1;
+  return h('section', { class: 'qbox', 'aria-live': 'polite' },
+    h('div', { class: 'q-head' },
+      h('span', { class: 'qtype' }, TYPES[q.k].short)),
+    h('h2', { class: 'q' }, q.q),
+    canSpeak ? h('div', { class: 'tools' },
+      h('button', { class: 'icon', onclick: () => speakList([q.q]) }, '🔊 Escuchar la pregunta'),
+      h('button', { class: 'icon', onclick: () => speakList(P.order.map(oi => q.o[oi])) }, '🔊 Escuchar las respuestas')) : null,
+    h('div', { class: 'opts' }, P.order.map(oi => {
+      const right = P.locked && oi === 0;
+      const wrong = P.wrong.has(oi);
+      return h('button', {
+        class: 'opt' + (right ? ' right' : '') + (wrong ? ' wrong' : ''),
+        disabled: P.locked || wrong, onclick: () => answer(oi)
+      }, q.o[oi], right ? h('span', { class: 'mk' }, '✅') : null, wrong ? h('span', { class: 'mk' }, '✖') : null);
+    })),
+    P.feedback ? h('div', { class: 'fb ' + (P.feedback.ok ? 'ok' : 'oops') },
+      owl(44, P.feedback.ok ? 'happy' : 'think'),
+      h('p', null, P.feedback.msg),
+      P.feedback.ok ? h('button', { id: 'next-btn', class: 'btn primary', onclick: next }, isLast ? 'Ver mis estrellas ⭐' : 'Siguiente →') : null) : null);
+}
+
+function answer(oi) {
+  if (P.locked) return;
+  const q = curQ();
+  if (oi === 0) {
+    const first = P.tries === 0;
+    const cardRes = P.cardRes.map((c, i) => i === P.ci ? { ok: c.ok + (first ? 1 : 0), n: c.n + 1 } : c);
+    setP({ locked: true, results: [...P.results, { k: q.k, ok: first }], cardRes, feedback: { ok: true, msg: pick(first ? OK1 : OK2) } });
+    return;
+  }
+  const wrong = new Set(P.wrong); wrong.add(oi);
+  setP({ tries: P.tries + 1, wrong, ev: q.ev, showText: true, feedback: { ok: false, msg: pick(OOPS) } });
+}
+
+function next() {
+  const card = curCard();
+  if (P.qi + 1 < card.preguntas.length) { setP(questionPatch(card, P.qi + 1)); return; }
+  if (P.ci + 1 < P.cards.length) {
+    stopSpeech();
+    const nextCard = P.cards[P.ci + 1];
+    P = { ...P, ci: P.ci + 1, phase: P.L.predict ? 'predict' : 'read', showText: true, marks: new Set(), glos: null, reading: null, ...questionPatch(nextCard, 0) };
+    render(); window.scrollTo(0, 0);
+    return;
+  }
+  finish();
+}
+
+function finish() {
+  const ok = P.results.filter(r => r.ok).length;
+  const n = P.results.length;
+  const prog = { ...S.prog };
+  P.cards.forEach((c, i) => {
+    const r = P.cardRes[i];
+    prog[c.id] = Math.max(prog[c.id] || 0, r.n ? r.ok / r.n : 0);
+  });
+  const stats = { ...S.stats };
+  P.results.forEach(r => {
+    const s = stats[r.k] || { ok: 0, n: 0 };
+    stats[r.k] = { ok: s.ok + (r.ok ? 1 : 0), n: s.n + 1 };
+  });
+  const title = P.L.mode === 'pick' ? P.cards[0].titulo : `${P.cards.length} frases`;
+  const hist = [{ d: new Date().toISOString(), lvl: P.L.n, title, ok, n }, ...S.hist].slice(0, 60);
+  S = { ...S, prog, stats, hist, stars: (S.stars || 0) + ok };
+  save();
+  syncHub(ok, n);
+  go({ name: 'result', ok, n, L: P.L, card: P.cards[0], talked: false });
+}
+
+function viewResult() {
+  const { ok, n, L, card } = view;
+  const ratio = n ? ok / n : 0;
+  const title = ratio === 1 ? '¡Perfecto!' : ratio >= 0.6 ? '¡Muy buen trabajo!' : '¡Bien hecho por intentarlo!';
+  const msg = ratio === 1 ? 'Lo has entendido todo a la primera.'
+    : ratio >= 0.6 ? 'Has encontrado casi todas las respuestas a la primera.'
+    : 'Leer otra vez y buscar la pista te ayuda a entender mejor. ¡Sigue practicando!';
+  const box = h('section', { class: 'result' },
+    owl(110, 'happy'),
+    h('h1', null, title),
+    h('div', { class: 'stars', 'aria-label': `${ok} estrellas de ${n}` },
+      Array.from({ length: n }, (_, i) => h('span', { class: i < ok ? '' : 'off' }, '⭐'))),
+    h('p', { class: 'score' }, `${ok} de ${n} a la primera. ${msg}`),
+    card.hablar ? h('div', { class: 'talk' },
+      h('h3', null, 'Para hablar juntos'),
+      h('p', null, card.hablar),
+      card.prediccion ? h('p', { class: 'muted' }, '¿Acertasteis lo que pensabais antes de leer?') : null,
+      h('div', null, view.talked
+        ? h('span', { class: 'muted' }, '✓ ¡Hablado!')
+        : h('button', { class: 'btn soft', onclick: () => { view = { ...view, talked: true }; render(); } }, 'Lo hemos hablado ✓'))) : null,
+    h('div', { class: 'row' },
+      L.mode === 'batch'
+        ? h('button', { class: 'btn primary', onclick: () => startSession(L, pickBatch(L)) }, 'Otras 5 frases')
+        : h('button', { class: 'btn primary', onclick: () => go({ name: 'list', L }) }, L.n === 4 ? 'Elegir otro cuento' : 'Elegir otro texto'),
+      L.mode === 'pick' ? h('button', { class: 'btn soft', onclick: () => startSession(L, [card]) }, 'Repetir') : null,
+      h('button', { class: 'btn soft', onclick: () => go({ name: 'home' }) }, 'Volver al camino')));
+  if (ratio === 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 18; i++) {
+      box.append(h('span', { class: 'fall', 'aria-hidden': 'true', style: `left:${Math.random() * 95}%;animation-delay:${Math.random() * 0.8}s` }, pick(['⭐', '✨', '🌟'])));
+    }
+  }
+  return h('main', { class: 'wrap' }, box);
+}
+
+function viewParents() {
+  const nameInput = h('input', { id: 'nombre-familia', type: 'text', maxlength: '20', value: S.name, placeholder: 'Nombre de la niña', autocomplete: 'off' });
+  const typeRows = Object.entries(TYPES).map(([k, t]) => {
+    const s = S.stats[k] || { ok: 0, n: 0 };
+    const pct = s.n ? Math.round((s.ok / s.n) * 100) : 0;
+    return h('div', { class: 'skill' },
+      h('span', { class: 'nm' }, t.name),
+      h('span', { class: 'pct' }, s.n ? `${pct} %` : '—'),
+      h('span', { class: 'bar' }, h('i', { style: `width:${pct}%;--lc:var(--accent)` })),
+      h('span', { class: 'sub' }, s.n ? `${s.ok} de ${s.n} preguntas acertadas a la primera` : 'Todavía sin preguntas de este tipo'));
+  });
+  const ranked = Object.entries(TYPES)
+    .map(([k, t]) => ({ t, s: S.stats[k] || { ok: 0, n: 0 } }))
+    .filter(x => x.s.n >= 3)
+    .sort((a, b) => a.s.ok / a.s.n - b.s.ok / b.s.n);
+  const weakest = ranked[0];
+  const advice = weakest
+    ? h('p', { class: 'advice' }, h('b', null, `Donde más le cuesta: ${weakest.t.name.toLowerCase()}. `), weakest.t.tip)
+    : h('p', { class: 'muted' }, 'Cuando haya respondido unas cuantas preguntas, aquí verás qué tipo le cuesta más y una idea para practicarlo.');
+  const fmt = iso => { try { return new Date(iso).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); } catch (e) { return ''; } };
+
+  return h('main', { class: 'wrap' },
+    h('div', { class: 'play-top' }, h('button', { class: 'ghost', onclick: () => go({ name: 'home' }) }, '← Camino')),
+    h('h1', null, 'Zona de familia'),
+
+    h('section', { class: 'panel' },
+      h('h2', null, 'Cómo va'),
+      h('p', { class: 'muted' }, 'Cuenta solo lo que acierta a la primera; si se equivoca, la app le marca en amarillo dónde está la respuesta.'),
+      typeRows, advice),
+
+    h('section', { class: 'panel' },
+      h('h2', null, 'Últimas lecturas'),
+      S.hist.length
+        ? h('div', { class: 'table-scroll' }, h('table', null,
+            h('thead', null, h('tr', null, h('th', null, 'Día'), h('th', null, 'Nivel'), h('th', null, 'Lectura'), h('th', null, 'A la primera'))),
+            h('tbody', null, S.hist.slice(0, 15).map(r => h('tr', null,
+              h('td', null, fmt(r.d)), h('td', null, String(r.lvl)), h('td', null, r.title), h('td', null, `${r.ok} / ${r.n}`))))))
+        : h('p', { class: 'muted' }, 'Aún no hay lecturas. Empezad por la parada 1.')),
+
+    h('section', { class: 'panel' },
+      h('h2', null, 'Cómo practicar juntos'),
+      h('ul', { class: 'tips' },
+        h('li', null, h('b', null, 'Poco y a menudo: '), '10 o 15 minutos al día funcionan mejor que una hora el fin de semana.'),
+        h('li', null, h('b', null, 'Que lea en voz alta '), 'y siga las palabras con el dedo (puede tocarlas en pantalla para marcarlas).'),
+        h('li', null, h('b', null, 'Antes de responder, '), 'pregúntale: «¿Dónde lo pone?». Buscar la pista en el texto es la habilidad clave.'),
+        h('li', null, h('b', null, 'Pídele que lo cuente con sus palabras '), 'al terminar un texto: es la mejor prueba de que lo ha entendido.'),
+        h('li', null, h('b', null, 'El botón de escuchar '), 'es una ayuda para textos largos; mejor que primero lo intente leer ella sola.'),
+        h('li', null, h('b', null, 'Celebra el esfuerzo, '), 'no solo los aciertos. Equivocarse y volver a leer también es aprender.'))),
+
+    h('section', { class: 'panel' },
+      h('h2', null, 'Ajustes'),
+      PLAYER
+        ? h('p', null, h('b', null, `${PLAYER.avatar || ''} ${PLAYER.name}`), h('span', { class: 'muted' }, ' · El nombre y el avatar se cambian en la Isla de Juegos.'))
+        : h('form', { class: 'field', onsubmit: e => { e.preventDefault(); setS({ name: nameInput.value.trim() }); } },
+            h('label', { for: 'nombre-familia' }, 'Nombre'), nameInput, h('button', { class: 'btn soft', type: 'submit' }, 'Guardar')),
+      h('label', { class: 'switch', for: 'audio-switch' },
+        h('input', { id: 'audio-switch', type: 'checkbox', checked: S.audio, onchange: e => setS({ audio: e.target.checked }) }),
+        'Mostrar el botón «Escuchar» del texto (el de las preguntas está siempre)'),
+      canSpeak ? null : h('p', { class: 'muted' }, 'Este navegador no puede leer en voz alta.'),
+      view.confirmReset
+        ? h('div', { class: 'confirm' },
+            h('p', null, '¿Seguro? Se borrarán las estrellas, el progreso y el historial.'),
+            h('button', { class: 'btn danger', onclick: () => { S = { ...DEFAULTS, name: S.name, audio: S.audio, size: S.size }; save(); go({ name: 'home' }); } }, 'Sí, borrar'),
+            h('button', { class: 'btn soft', onclick: () => { view = { ...view, confirmReset: false }; render(); } }, 'Cancelar'))
+        : h('div', null, h('button', { class: 'btn danger', onclick: () => { view = { ...view, confirmReset: true }; render(); } }, 'Borrar el progreso'))));
+}
+
+/* ================= ARRANQUE ================= */
+applySize();
+if (canSpeak) { try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => {}; } catch (e) { /* nada */ } }
+render();
+</script>
+</body>
+</html>
