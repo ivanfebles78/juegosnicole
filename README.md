@@ -19,7 +19,7 @@ Todos los juegos viven en el mismo dominio, así que comparten el `localStorage`
 
 Mi cuerpo en francés no usa la voz del aparato (suele ser española): reproduce audios grabados con una voz francesa nativa en `frances/audio/`. Si cambias o añades frases, regénéralos con `python scripts/generar-audio-frances.py` (necesita `pip install edge-tts`).
 
-«La canción» es un karaoke: toca la melodía y el bajo de `frances/cancion.json` e ilumina la letra y el muñeco a compás, para cantarla en casa. Se probó a hacer cantar a la voz sintética (afinando sílaba a sílaba) y sonaba mal, así que no hay voz. Para que suene como la canción de verdad hace falta una grabación cantada por una persona.
+«La canción» muestra primero el vídeo de HeyKids insertado con el reproductor oficial de YouTube (`youtube-nocookie.com`). No se descarga ni se copia su audio, que tiene derechos de autor. Como segunda opción, el karaoke: toca la melodía y el bajo de `frances/cancion.json` e ilumina la letra y el muñeco a compás, para cantarla en casa. Se probó a hacer cantar a la voz sintética (afinando sílaba a sílaba) y sonaba mal, así que no hay voz. Para que suene como la canción de verdad hace falta una grabación cantada por una persona.
 
 Mi cuerpo en francés carga directamente `../js/core.js`, `sonido.js` y `perfiles.js`, así que comparte también los sonidos, las estrellas y la pantalla de resultado.
 

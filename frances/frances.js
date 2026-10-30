@@ -319,10 +319,32 @@
     P.sound.win();
     if (fast) P.confetti(1);
   }
+  // Vídeo oficial de la canción: se inserta con el reproductor de YouTube (no se descarga ni se copia el audio)
+  const VIDEO_ID = 'U357TFq4L3c';
+  function mountVideo() {
+    const box = P.$('#song-video');
+    if (box.querySelector('iframe')) return;
+    const frame = document.createElement('iframe');
+    frame.src = `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?rel=0&playsinline=1`;
+    frame.title = 'Tête, épaules, genoux et pieds';
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    box.append(frame);
+  }
+  /** Quitar el reproductor también para la música si estaba sonando. */
+  const unmountVideo = () => P.$('#song-video').replaceChildren();
+  function setSongView(view) {
+    P.$$('#song-view .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.view === view)));
+    P.$('#song-video-box').hidden = view !== 'video';
+    P.$('#song-karaoke').hidden = view !== 'karaoke';
+    if (view === 'video') { if (singing) stopSong(); mountVideo(); } else { unmountVideo(); }
+  }
   function startSong() {
     renderLyrics();
     P.$('#song-msg').textContent = '';
     P.show('s-song');
+    setSongView('video');
   }
 
   // ---------- Juego: ¡Toca! ----------
@@ -464,6 +486,7 @@
     P.$('#learn-say').addEventListener('click', () => { if (learnCurrent) sayOne(PARTS[learnCurrent].fr); });
 
     P.$('#song-play').addEventListener('click', () => { if (singing) stopSong(); else playSong(); });
+    P.$('#song-view').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) setSongView(b.dataset.view); });
     P.$('#song-speed').addEventListener('click', (e) => {
       const b = e.target.closest('[data-bpm]');
       if (!b) return;
@@ -497,7 +520,11 @@
     });
 
     // Al cambiar de pantalla se calla la voz y se para la canción
-    P.onShow((screen) => { if (singing) stopSong(); else hush(); refreshTopbar(screen); });
+    P.onShow((screen) => {
+      if (singing) stopSong(); else hush();
+      if (screen !== 's-song') unmountVideo();
+      refreshTopbar(screen);
+    });
     document.addEventListener('pointerdown', () => { P.prefs.resumeOnGesture(); preload(); }, { once: true });
   }
 

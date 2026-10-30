@@ -81,15 +81,29 @@
   <section class="screen" id="s-song" hidden>
     <div class="game-head">
       <h2>La canción</h2>
-      <div class="chips" id="song-speed">
-        <button class="chip" data-bpm="92" aria-pressed="true">🐢 Despacio</button>
-        <button class="chip" data-bpm="132" aria-pressed="false">🐇 ¡Rápido!</button>
+      <div class="chips" id="song-view">
+        <button class="chip" data-view="video" aria-pressed="true">📺 La canción</button>
+        <button class="chip" data-view="karaoke" aria-pressed="false">🎵 Karaoke</button>
       </div>
     </div>
-    <div class="fr-layout">
+
+    <!-- Vídeo oficial (reproductor de YouTube, sin descargar nada) -->
+    <div class="board" id="song-video-box">
+      <p class="tip">Escucha la canción y <b>toca tu propio cuerpo</b> a la vez que los niños del vídeo.</p>
+      <div class="video-frame" id="song-video"></div>
+      <p class="credit">Vídeo: «Tête, Épaules, Genoux et Pieds» de
+        <a href="https://www.youtube.com/watch?v=U357TFq4L3c" target="_blank" rel="noopener">HeyKids – Chansons pour enfants</a> (YouTube).</p>
+    </div>
+
+    <!-- Karaoke: la melodía con la letra y el muñeco iluminados -->
+    <div class="fr-layout" id="song-karaoke" hidden>
       <div class="figure-box" id="song-fig"></div>
       <div class="board">
         <p class="tip">¡Cantad juntas con la música! Sigue la letra y <b>toca tu propio cuerpo</b> cada vez que se ilumine una parte.</p>
+        <div class="chips" id="song-speed">
+          <button class="chip" data-bpm="92" aria-pressed="true">🐢 Despacio</button>
+          <button class="chip" data-bpm="132" aria-pressed="false">🐇 ¡Rápido!</button>
+        </div>
         <div class="lyrics" id="lyrics"></div>
         <div class="row"><button class="btn go big" id="song-play">▶ ¡A cantar!</button></div>
         <p class="feedback ok" id="song-msg" aria-live="polite"></p>
