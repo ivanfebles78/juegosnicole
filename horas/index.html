@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Juego de las Horas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="horas.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="topbar" id="topbar">
+  <a class="me" href="../" title="Volver a la Isla de Juegos">
+    <span class="me-face" id="me-face"></span>
+    <span class="me-name" id="me-name"></span>
+  </a>
+  <span class="star-pill" id="me-stars" title="Estrellas conseguidas">⭐ 0</span>
+  <div class="tools">
+    <button class="tool" id="btn-music" aria-pressed="false" title="Música">🎵</button>
+    <button class="tool" id="btn-voice" aria-pressed="true" title="Leer en voz alta">🗣️</button>
+    <a class="tool home" href="../" title="Volver a la isla">🏝️</a>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- JUEGO -->
+  <section class="screen" id="s-horas">
+    <div class="game-head">
+      <h2 id="title-text">Juego de las Horas</h2>
+      <div class="chips" id="lang-chips" role="group" aria-label="Idioma">
+        <button class="chip" data-lang="es" aria-pressed="true">Español</button>
+        <button class="chip" data-lang="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+    <div class="board">
+      <div class="horas-top">
+        <p class="tip" id="status-msg"></p>
+        <div class="dots" id="horas-dots"></div>
+      </div>
+      <div class="clock-board" id="clock-board">
+        <svg class="links" id="links" aria-hidden="true"></svg>
+        <div class="col">
+          <h3 class="col-title" id="col-numeric-title">Reloj digital</h3>
+          <div class="col-items" id="col-numeric"></div>
+        </div>
+        <div class="col">
+          <h3 class="col-title" id="col-text-title">En palabras</h3>
+          <div class="col-items" id="col-text"></div>
+        </div>
+        <div class="col">
+          <h3 class="col-title" id="col-clock-title">Reloj con agujas</h3>
+          <div class="col-items" id="col-clock"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn ghost" id="help-btn">🍕 Ayuda</button>
+        <button class="btn ghost" id="new-round-btn">🔄 Nueva ronda</button>
+        <button class="btn go" id="finish-btn">🏁 Terminar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="screen" id="s-result" hidden>
+    <div class="board center result">
+      <div class="res-face" id="res-face">🏆</div>
+      <h2 id="res-title"></h2>
+      <div class="res-stars" id="res-stars"></div>
+      <p class="big-text" id="res-msg"></p>
+      <div class="row">
+        <button class="btn go big" id="res-again">🔁 Otra ronda</button>
+        <a class="btn ghost" href="../">🏝️ Otros juegos</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- AYUDA: el reloj es una pizza -->
+<div class="help-veil" id="help" hidden>
+  <div class="help-card board" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="help-head">
+      <h2 id="help-title">¿Qué es «y cuarto», «y media»…?</h2>
+      <button class="tool" id="help-close" title="Cerrar">✕</button>
+    </div>
+    <p id="help-intro">Imagina que el reloj es una pizza. La aguja larga se come los trozos.</p>
+    <div class="help-grid">
+      <div class="help-row"><span class="pizza q1"></span><p id="help-quarter"></p></div>
+      <div class="help-row"><span class="pizza q2"></span><p id="help-half"></p></div>
+      <div class="help-row"><span class="pizza q3"></span><p id="help-to"></p></div>
+      <div class="help-row"><span class="pizza q4"></span><p id="help-oclock"></p></div>
+    </div>
+  </div>
+</div>
+
+<div class="react" id="react" aria-hidden="true"><span class="react-face" id="react-face"></span><span class="react-text" id="react-text"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/sonido.js"></script>
+<script src="../js/perfiles.js"></script>
+<script src="horas-datos.js"></script>
+<script src="horas.js"></script>
+</body>
+</html>

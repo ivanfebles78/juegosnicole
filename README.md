@@ -9,6 +9,7 @@ Juegos educativos para Nicole, publicados con GitHub Pages. La portada es la **I
 | Mapa de España | `index.html` + `js/juego-mapa.js` | Comunidades autónomas |
 | Leo y Comprendo | `lectura/` | Comprensión lectora (frases → cuentos) |
 | Mi cuerpo en francés | `frances/` | Partes del cuerpo con «Tête, épaules, genoux et pieds» |
+| Juego de las Horas | `horas/` | Leer la hora: en punto, y cuarto, y media y menos cuarto (español e inglés) |
 
 ## Cómo comparten el jugador
 

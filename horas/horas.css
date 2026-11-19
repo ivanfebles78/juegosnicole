@@ -1,0 +1,61 @@
+/* Juego de las Horas: tres columnas (digital, palabras, agujas) unidas con líneas. Usa los tokens de ../styles.css. */
+.horas-top { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.horas-top .tip { flex: 1 1 260px; min-height: 2.6em; }
+.tip.ok { background: var(--ok-bg); border-color: var(--ok); }
+.tip.ko { background: var(--ko-bg); border-color: var(--ko); }
+
+.clock-board {
+  position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 9vw, 120px);
+  padding: 14px; border-radius: var(--r-lg); background: linear-gradient(160deg, #fff4c7, #fff 45%, #e5dbff);
+  border: 3px dashed #d5dcef;
+}
+.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: visible; }
+.links line { stroke-linecap: round; }
+.links .temp { stroke: var(--ink-soft); stroke-width: 4; stroke-dasharray: 6 6; }
+.links .good { stroke: var(--leaf); stroke-width: 6; }
+.links .bad { stroke: var(--tomato); stroke-width: 6; }
+.col { display: grid; align-content: start; gap: 10px; min-width: 0; position: relative; z-index: 2; }
+.col-title { font-size: clamp(.95rem, 2.6vw, 1.25rem); text-align: center; }
+.col-items { display: grid; gap: 10px; }
+
+.t-card {
+  font: inherit; font-weight: 800; font-size: clamp(1rem, 2.8vw, 1.35rem); color: var(--ink); cursor: pointer;
+  min-height: 84px; display: grid; place-items: center; text-align: center; padding: 6px; line-height: 1.15;
+  background: var(--paper); border: var(--line); border-radius: var(--r-md); box-shadow: 0 4px 0 var(--ink);
+  touch-action: none; user-select: none; -webkit-user-select: none; transition: transform .1s, background .2s;
+}
+.t-card:hover { transform: translateY(-2px); }
+.t-card.digital { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.4rem, 4.4vw, 2.2rem); font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+.t-card.selected { background: #fffbe0; box-shadow: 0 0 0 4px var(--sun), 0 4px 0 var(--ink); transform: scale(1.04); }
+.t-card.linked { background: var(--ok-bg); border-color: var(--ok); }
+.t-card.locked { background: var(--leaf); color: var(--paper); cursor: default; box-shadow: 0 4px 0 var(--ok); }
+.t-card.locked .clock-face circle.face { fill: #f2fff7; }
+.t-card .clock-face { width: min(88px, 100%); height: auto; }
+a.me, a.tool { text-decoration: none; color: var(--ink); }
+a.tool { display: grid; place-items: center; }
+.star-pill { white-space: nowrap; }
+
+/* Reloj con agujas */
+.clock-face .face { fill: var(--paper); stroke: var(--ink); stroke-width: 4; }
+.clock-face .tick { stroke: var(--ink-soft); stroke-width: 2.5; stroke-linecap: round; }
+.clock-face .num { font: 400 13px var(--font-display); fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.clock-face .hour { stroke: var(--tomato); stroke-width: 6; stroke-linecap: round; }
+.clock-face .minute { stroke: var(--ocean); stroke-width: 4; stroke-linecap: round; }
+.clock-face .pin { fill: var(--ink); }
+
+/* Ayuda */
+.help-veil { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(31, 42, 92, .45); }
+.help-card { width: min(560px, 100%); max-height: 90vh; overflow-y: auto; }
+.help-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.help-grid { display: grid; gap: 12px; }
+.help-row { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; font-weight: 700; }
+.pizza { width: 76px; height: 76px; border-radius: 50%; border: var(--line); position: relative;
+  background: conic-gradient(var(--sun) 0 var(--eat), #fff 0 360deg); }
+.pizza::after { content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-conic-gradient(transparent 0 89deg, var(--ink) 89deg 91deg); opacity: .35; }
+.pizza.q1 { --eat: 90deg; } .pizza.q2 { --eat: 180deg; } .pizza.q3 { --eat: 270deg; } .pizza.q4 { --eat: 360deg; }
+
+@media (max-width: 560px) {
+  .clock-board { padding: 8px; gap: 18px; }
+  .t-card { min-height: 72px; font-size: .92rem; }
+}
